@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="ADP CRM"/>
+<title>ADP Rochester CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#030b18;font-family:'Outfit',sans-serif;color:#f1f5f9;overflow:hidden}
+body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:#1a2744;border-radius:3px}
+input,select,textarea,button{font-family:'Outfit',sans-serif;-webkit-appearance:none;outline:none;border:none}
+#app{display:flex;flex-direction:column;height:100vh;max-width:430px;margin:0 auto}
+#view{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 14px 80px}
+#nav{display:flex;background:#060f1e;border-top:1px solid #1a2744;padding:6px 0;padding-bottom:calc(6px + env(safe-area-inset-bottom));flex-shrink:0}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#334155;cursor:pointer;padding:4px 0}
+.nb.on{color:#2563eb}
+.nb svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nb span{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.pt{font-size:18px;font-weight:800;color:#f8fafc}
+.card{background:#060f1e;border:1px solid #1a2744;border-radius:10px;padding:14px;margin-bottom:10px}
+.sl{font-size:9px;font-weight:700;color:#334155;text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;font-weight:700;border-radius:8px;font-size:12px;padding:9px 14px;border:none;transition:opacity .15s}
+.bp{background:#2563eb;color:#fff}
+.bg{background:transparent;color:#64748b;border:1px solid #1e293b}
+.bd{background:#7f1d1d;color:#fca5a5}
+.bs{background:#14532d;color:#86efac}
+.bo{background:transparent;color:#2563eb;border:1px solid #2563eb}
+.bw{width:100%}
+.btn:active{opacity:.75}
+.inp{width:100%;background:#0a1220;border:1px solid #1e293b;border-radius:8px;padding:10px 12px;color:#f1f5f9;font-size:13px}
+.sel{width:100%;background:#0a1220;border:1px solid #1e293b;border-radius:8px;padding:10px 12px;color:#f1f5f9;font-size:13px}
+.tex{width:100%;background:#0a1220;border:1px solid #1e293b;border-radius:8px;padding:10px 12px;color:#f1f5f9;font-size:13px;resize:vertical;min-height:70px}
+.inp:focus,.sel:focus,.tex:focus{border-color:#2563eb}
+.fld{margin-bottom:12px}
+.fld label{display:block;font-size:9px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.pill{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid #1a2744;background:#0a1220;color:#475569;cursor:pointer;white-space:nowrap;flex-shrink:0;-webkit-appearance:none}
+.pill.on{background:#1e3a5f;border-color:#2563eb;color:#60a5fa}
+.prow{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.prow::-webkit-scrollbar{display:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
+.tag{display:inline-block;padding:2px 7px;border-radius:12px;font-size:9px;font-weight:700;background:#0f2040;color:#60a5fa}
+.row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #0a1220;cursor:pointer}
+.row:last-child{border-bottom:none}
+.barw{flex:1;background:#0a1220;border-radius:3px;height:6px;overflow:hidden}
+.barf{height:100%;border-radius:3px;transition:width .4s}
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.modal{background:#030b18;border:1px solid #1a2744;border-radius:16px 16px 0 0;width:100%;max-width:430px;max-height:90vh;display:flex;flex-direction:column}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid #0a1220;flex-shrink:0}
+.mh h3{font-size:15px;font-weight:700;color:#f1f5f9}
+.mc{font-size:22px;color:#475569;cursor:pointer;background:none;padding:0 4px;line-height:1}
+.mb{padding:18px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1}
+.hero{background:linear-gradient(135deg,#060f1e,#0a1628);border:1px solid #1a2744;border-radius:12px;padding:16px;margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
+.kpi{background:#060f1e;border:1px solid #1a2744;border-radius:9px;padding:10px;text-align:center}
+.kv{font-size:22px;font-weight:800}
+.kl{font-size:9px;font-weight:700;color:#334155;text-transform:uppercase;margin-top:1px}
+.qi{background:#060f1e;border:1px solid #1a2744;border-radius:9px;padding:11px;margin-bottom:7px;display:flex;align-items:center;gap:10px}
+.qdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;border:2px solid #1a2744;background:#0a1220;color:#334155}
+.sdot.done{background:#14532d;border-color:#15803d;color:#86efac}
+.sdot.cur{border-color:#2563eb;color:#60a5fa;background:#0f2040}
+.sline{width:1px;height:12px;background:#1a2744;margin-left:13px}
+.cnext{background:#0f2040;border:1px solid #1e3a5f;border-radius:8px;padding:12px;margin-bottom:12px}
+.pbs{margin-bottom:14px}
+.pbs h4{font-size:12px;font-weight:700;color:#f1f5f9;margin-bottom:6px;border-left:3px solid #2563eb;padding-left:8px}
+.pbb{background:#0a1220;border-radius:7px;padding:11px;font-size:11px;line-height:1.85;color:#94a3b8;white-space:pre-wrap}
+.rs{border-left:3px solid #2563eb;padding-left:9px;margin-bottom:13px}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.fade{animation:fi .18s ease}
+.sw{position:relative;margin-bottom:12px}
+.sw svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;stroke:#475569;fill:none;stroke-width:2}
+.sw .inp{padding-left:30px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="view"></div>
+  <nav id="nav">
+    <button class="nb on" id="nb-dash" onclick="nav('dash')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="nb" id="nb-queue" onclick="nav('queue')">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      <span>Queue</span>
+    </button>
+    <button class="nb" id="nb-accts" onclick="nav('accts')">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      <span>Accounts</span>
+    </button>
+    <button class="nb" id="nb-plays" onclick="nav('plays')">
+      <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <span>Playbooks</span>
+    </button>
+    <button class="nb" id="nb-report" onclick="nav('report')">
+      <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      <span>Report</span>
+    </button>
+  </nav>
+</div>
+<script>
+// ─── CONSTANTS ────────────────────────────────────────────
+var STAGES=["Target","Prospecting","Connected","Discovery","Demo","Proposal","Negotiation","Closed Won","Closed Lost"];
+var VERTS=["Manufacturing","Healthcare","Technology","Hospitality","Financial Services","Construction","Education","Nonprofit","Auto Dealership","Professional Services","Real Estate","Winery/Bev","Senior Living","Distribution","Other"];
+var PRODS=["Workforce Now (HCM)","TotalSource (PEO)","Retirement/401k","Workers Comp Pay-by-Pay","Health Insurance","Time & Attendance","HR Pro Advisory","Wage Garnishment","Background Screening"];
+var SC={Target:"#334155",Prospecting:"#1e40af",Connected:"#0891b2",Discovery:"#7c3aed",Demo:"#9333ea",Proposal:"#c2410c",Negotiation:"#b45309","Closed Won":"#15803d","Closed Lost":"#991b1b"};
+var TC={1:"#ef4444",2:"#f59e0b",3:"#6b7280"};
+var AI={call:"📞",email:"📧",drop:"🚶",meeting:"🤝",demo:"💻",linkedin:"💼",note:"📝"};
+var AC={call:"#10b981",email:"#2563eb",drop:"#f97316",meeting:"#a855f7",demo:"#ef4444",linkedin:"#0ea5e9",note:"#f59e0b"};
+var CTITLES={Manufacturing:["VP Human Resources","HR Director","Controller","CFO","Office Manager"],Healthcare:["Practice Administrator","Office Manager","HR Director","CFO","Controller"],Technology:["VP People","Chief People Officer","CFO","Controller","COO"],Hospitality:["General Manager","HR Manager","Controller","CFO"],Construction:["CFO","Controller","HR Manager","VP Operations","Office Manager"],"Financial Services":["COO","CFO","Managing Partner","HR Director"],Education:["Superintendent","Business Administrator","HR Director","CFO"],"Auto Dealership":["Dealer Principal","General Manager","Controller","HR Manager"],"Professional Services":["Managing Partner","HR Director","CFO","Controller"],"Senior Living":["Executive Director","HR Director","Administrator","CFO"],Default:["HR Director","CFO","Controller","Office Manager","VP Operations"]};
+var DEF_CAD=[
+  {day:1,type:"drop",label:"In-Person Drop",desc:"Walk in, ask for DM by name. Get receptionist name. Leave branded leave-behind."},
+  {day:1,type:"email",label:"Same-Day Email",desc:"Subject: Stopped by today - [Company]. Short, warm, end with calendar ask."},
+  {day:2,type:"call",label:"Morning Call",desc:"Call before 9am or after 4pm. Reference drop and email. Leave voicemail if no answer."},
+  {day:4,type:"linkedin",label:"LinkedIn Connect",desc:"Send connection request. Personalized note under 280 chars."},
+  {day:5,type:"email",label:"Value Email",desc:"Send relevant insight - compliance update or vertical stat. No pitch. Pure value."},
+  {day:7,type:"call",label:"Follow-Up Call 2",desc:"Second attempt. Different time of day. Reference value email."},
+  {day:10,type:"email",label:"Case Study Email",desc:"2 sentences about a similar Rochester company you helped. Specific and relatable."},
+  {day:14,type:"call",label:"Call 3 - Direct Ask",desc:"Ask: Is this bad timing, or is payroll not a priority? Force a yes or no."},
+  {day:17,type:"linkedin",label:"LinkedIn Engage",desc:"Comment on their post or send InMail with a specific company insight."},
+  {day:21,type:"email",label:"Break-Up Email",desc:"I will stop being a pest. If things change, I am here. This triggers replies."},
+  {day:30,type:"call",label:"30-Day Re-Engage",desc:"New angle - company news, new ADP product, or upcoming compliance deadline."}
+];
+
+// ─── STORAGE ─────────────────────────────────────────────
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function ld(k,d){try{var r=localStorage.getItem(k);return r!==null?JSON.parse(r):d;}catch(e){return d;}}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+
+// ─── STATE ───────────────────────────────────────────────
+var accts=[], acts=[], cads=[], ccads=[];
+var vw='dash', curAcct=null, mstack=[];
+var afProds=[];
+var acctQ='', acctFS='All', acctFT='All', acctFH='All';
+var pbKey='paychex', acctTab='overview';
+
+function initData(){
+  accts=ld('crm3_accts',[]);
+  acts=ld('crm3_acts',[]);
+  cads=ld('crm3_cads',[]);
+  ccads=ld('crm3_ccads',[]);
+  if(!accts.length && !ld('crm3_seeded',false)){
+    accts=SEEDS.map(function(s){
+      return Object.assign({},s,{id:uid(),acv:Number(s.acv)||0,products:[],contacts:[{id:uid(),name:'',title:'',email:'',phone:'',linkedin:'',isPrimary:true}],winReason:'',lossReason:'',createdAt:Date.now()});
+    });
+    sv('crm3_accts',accts);
+    sv('crm3_seeded',true);
+  }
+}
+function saveA(){sv('crm3_accts',accts);}
+function saveActs(){sv('crm3_acts',acts);}
+function saveCads(){sv('crm3_cads',cads);}
+function saveCcads(){sv('crm3_ccads',ccads);}
+function getA(id){return accts.filter(function(a){return a.id===id;})[0]||null;}
+function getActs(aid){return acts.filter(function(a){return a.accountId===aid;}).sort(function(a,b){return b.ts-a.ts;});}
+function getCad(aid){return cads.filter(function(c){return c.accountId===aid;})[0]||null;}
+function getDoneSt(aid){var c=getCad(aid);return c&&c.done?c.done:[];}
+function daysSinceAct(aid){var a=acts.filter(function(x){return x.accountId===aid;});if(!a.length)return null;var last=Math.max.apply(null,a.map(function(x){return x.ts;}));return Math.floor((Date.now()-last)/86400000);}
+function isStale(a){var d=daysSinceAct(a.id);return d!==null&&d>7&&["Closed Won","Closed Lost","Target"].indexOf(a.stage)===-1;}
+
+// ─── NAVIGATION ──────────────────────────────────────────
+function nav(v,aid){
+  vw=v;
+  curAcct=aid?getA(aid):null;
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('on');});
+  var nb=document.getElementById('nb-'+v);
+  if(nb) nb.classList.add('on');
+  render();
+  document.getElementById('view').scrollTop=0;
+}
+function openAcct(id){
+  curAcct=getA(id);
+  vw='acct';
+  acctTab='overview';
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('on');});
+  render();
+  document.getElementById('view').scrollTop=0;
+}
+
+// ─── MODALS ──────────────────────────────────────────────
+function openM(html){
+  var bg=document.createElement('div');
+  bg.className='mbg';
+  bg.innerHTML='<div class="modal fade">'+html+'</div>';
+  bg.addEventListener('click',function(e){if(e.target===bg)closeM();});
+  document.body.appendChild(bg);
+  mstack.push(bg);
+}
+function closeM(){if(mstack.length){mstack.pop().remove();}}
+function closeAM(){mstack.forEach(function(m){m.remove();});mstack=[];}
+
+// ─── HELPERS ─────────────────────────────────────────────
+function fm(n){return '$'+(Number(n)||0).toLocaleString();}
+function fk(n){return '$'+Math.round((Number(n)||0)/1000)+'K';}
+function sc(stage){var c=SC[stage]||'#334155';return '<span class="badge" style="background:'+c+'33;color:'+c+'">'+stage+'</span>';}
+function td(tier){return '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+(TC[tier]||'#6b7280')+';flex-shrink:0"></span>';}
+function pb(hcm){return(hcm||'').toLowerCase().indexOf('paychex')>-1?'<span class="badge" style="background:#78350f;color:#fde68a;font-size:9px">PAYCHEX</span>':'';}
+function donut(pct,color,lbl,sz){
+  sz=sz||62;var r=24,ci=2*Math.PI*r,f=Math.min(pct/100,1)*ci;
+  return '<div style="display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="'+sz+'" height="'+sz+'" viewBox="0 0 62 62"><circle cx="31" cy="31" r="'+r+'" fill="none" stroke="#1a2744" stroke-width="5"/><circle cx="31" cy="31" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="5" stroke-dasharray="'+f+' '+(ci-f)+'" stroke-linecap="round" transform="rotate(-90 31 31)"/><text x="31" y="35" text-anchor="middle" fill="#f1f5f9" font-size="10" font-weight="700" font-family="Outfit">'+Math.round(pct)+'%</text></svg>'+(lbl?'<span style="font-size:9px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.06em">'+lbl+'</span>':'')+'</div>';
+}
+function mbar(val,max,col){var p=Math.min((val/Math.max(max,1))*100,100);return '<div class="barw"><div class="barf" style="width:'+p+'%;background:'+col+'"></div></div>';}
+function spark(vals,col,w,h){
+  col=col||'#2563eb';w=w||120;h=h||32;
+  if(!vals||vals.length<2)return '<div style="width:'+w+'px;height:'+h+'px;background:#0a1220;border-radius:4px"></div>';
+  var mx=Math.max.apply(null,vals)||1,mn=Math.min.apply(null,vals),rng=mx-mn||1;
+  var pts=vals.map(function(v,i){return ((i/(vals.length-1))*w).toFixed(1)+','+(h-((v-mn)/rng)*(h-6)-3).toFixed(1);}).join(' ');
+  return '<svg width="'+w+'" height="'+h+'"><polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function copyTxt(txt,btnId){
+  var btn=document.getElementById(btnId);
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){if(btn){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);}});}
+  else{var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();if(btn){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},2000);}}
+}
+</script>
+
+<script>
+// ─── SEED DATA ───────────────────────────────────────────
+var SEEDS=[
+{company:"Upstate Automotive Group",vertical:"Auto Dealership",tier:1,employees:200,hcm:"Paychex",acv:32000,city:"Rochester",stage:"Target",notes:"Multi-rooftop dealer group, top displacement target"},
+{company:"HYATT REGENCY Rochester",vertical:"Hospitality",tier:1,employees:220,hcm:"Paychex",acv:34000,city:"Rochester",stage:"Target",notes:"Full-service hotel, high turnover, TotalSource play"},
+{company:"Zweigle's Inc",vertical:"Manufacturing",tier:1,employees:180,hcm:"Paychex",acv:28000,city:"Rochester",stage:"Target",notes:"Legacy manufacturer, TotalSource and 401k play"},
+{company:"Lecesse Construction Corp",vertical:"Construction",tier:1,employees:200,hcm:"Paychex",acv:32000,city:"Rochester",stage:"Target",notes:"Large GC, certified payroll, prevailing wage compliance"},
+{company:"Navitar Inc",vertical:"Manufacturing",tier:1,employees:160,hcm:"Paychex",acv:26000,city:"Rochester",stage:"Target",notes:"Optics manufacturer, strong 401k angle"},
+{company:"VisualDx",vertical:"Technology",tier:1,employees:100,hcm:"Unknown",acv:20000,city:"Rochester",stage:"Target",notes:"SaaS company, tech-forward buyer"},
+{company:"Vuzix Corp",vertical:"Technology",tier:1,employees:110,hcm:"Unknown",acv:21000,city:"Rochester",stage:"Target",notes:"Publicly traded tech, compliance needs"},
+{company:"Renewal By Andersen of WNY",vertical:"Construction",tier:1,employees:180,hcm:"Paychex",acv:28000,city:"Rochester",stage:"Target",notes:"Fast-growth home services, large commissioned sales team"},
+{company:"Ralph Honda",vertical:"Auto Dealership",tier:1,employees:130,hcm:"Paychex",acv:23000,city:"Rochester",stage:"Target",notes:"High-volume dealer, complex variable pay plans"},
+{company:"Ambrell Corp",vertical:"Manufacturing",tier:1,employees:140,hcm:"Paychex",acv:24000,city:"Rochester",stage:"Target",notes:"Precision mfg, multi-state complexity"},
+{company:"Dixon Schwabl + Co",vertical:"Professional Services",tier:1,employees:130,hcm:"Unknown",acv:23000,city:"Rochester",stage:"Target",notes:"Top marketing agency"},
+{company:"Underberg and Kessler LLP",vertical:"Professional Services",tier:1,employees:120,hcm:"Unknown",acv:22000,city:"Rochester",stage:"Target",notes:"Large law firm, complex partner comp"},
+{company:"Rochester Red Wings",vertical:"Hospitality",tier:1,employees:120,hcm:"Paychex",acv:22000,city:"Rochester",stage:"Target",notes:"Multi-dept payroll, seasonal staff complexity"},
+{company:"Bob Johnson Marketplace Mazda",vertical:"Auto Dealership",tier:1,employees:110,hcm:"Paychex",acv:21000,city:"Rochester",stage:"Target",notes:"Dealer group, DMS integration play"},
+{company:"Valley Cadillac Corp",vertical:"Auto Dealership",tier:1,employees:95,hcm:"Paychex",acv:19000,city:"Rochester",stage:"Target",notes:"Luxury dealer, variable comp complexity"},
+{company:"Pharos Systems International",vertical:"Technology",tier:1,employees:100,hcm:"Paychex",acv:20000,city:"Rochester",stage:"Target",notes:"Print management SaaS, Paychex target"},
+{company:"Insero and Company CPAs",vertical:"Financial Services",tier:1,employees:110,hcm:"Unknown",acv:21000,city:"Rochester",stage:"Target",notes:"CPA firm, compliance-savvy buyer"},
+{company:"Spectracom Corporation",vertical:"Technology",tier:1,employees:145,hcm:"Unknown",acv:25000,city:"Rochester",stage:"Target",notes:"Defense tech, compliance critical"},
+{company:"Doxy Me Inc",vertical:"Technology",tier:1,employees:80,hcm:"Unknown",acv:17000,city:"Rochester",stage:"Target",notes:"Telehealth SaaS, rapid growth"},
+{company:"Once Again Nut Butter Collective",vertical:"Manufacturing",tier:1,employees:110,hcm:"Paychex",acv:21000,city:"Rochester",stage:"Target",notes:"Food mfg, co-op structure"},
+{company:"EMA Design Automation Inc",vertical:"Technology",tier:1,employees:130,hcm:"Unknown",acv:23000,city:"Rochester",stage:"Target",notes:"EDA software, engineering workforce"},
+{company:"Sydor Optics Inc",vertical:"Manufacturing",tier:1,employees:120,hcm:"Paychex",acv:22000,city:"Rochester",stage:"Target",notes:"Precision optics, skilled workforce"},
+{company:"Holiday Inn Rochester Downtown",vertical:"Hospitality",tier:1,employees:130,hcm:"Paychex",acv:23000,city:"Rochester",stage:"Target",notes:"Franchise hotel, HR compliance challenges"},
+{company:"Vaccinex",vertical:"Healthcare",tier:1,employees:75,hcm:"Unknown",acv:16000,city:"Rochester",stage:"Target",notes:"Life sciences, complex compliance"},
+{company:"Davidson Fink LLP",vertical:"Professional Services",tier:1,employees:100,hcm:"Paychex",acv:20000,city:"Rochester",stage:"Target",notes:"Law firm, Paychex target"},
+{company:"Boylan Code LLP",vertical:"Professional Services",tier:1,employees:90,hcm:"Paychex",acv:18000,city:"Rochester",stage:"Target",notes:"Law firm, professional employer complexity"},
+{company:"BCC Software LLC",vertical:"Technology",tier:1,employees:95,hcm:"Paychex",acv:19000,city:"Rochester",stage:"Target",notes:"Established tech company"},
+{company:"Transitowne",vertical:"Auto Dealership",tier:1,employees:115,hcm:"Paychex",acv:21000,city:"Rochester",stage:"Target",notes:"Established dealer, 401k opportunity"},
+{company:"Rochester Riverside Convention Center",vertical:"Hospitality",tier:1,employees:100,hcm:"Unknown",acv:20000,city:"Rochester",stage:"Target",notes:"Events venue, seasonal complexity"},
+{company:"Onestream Networks LLC",vertical:"Technology",tier:1,employees:140,hcm:"Unknown",acv:24000,city:"Rochester",stage:"Target",notes:"ISP tech, growing team"},
+{company:"Lacy Katzen LLP",vertical:"Professional Services",tier:1,employees:85,hcm:"Paychex",acv:17000,city:"Rochester",stage:"Target",notes:"Established law firm"},
+{company:"Seneca Park Zoo Society",vertical:"Nonprofit",tier:1,employees:150,hcm:"Paychex",acv:25000,city:"Rochester",stage:"Target",notes:"Complex workforce full part seasonal"},
+{company:"Volpara Health",vertical:"Healthcare",tier:1,employees:90,hcm:"Unknown",acv:18000,city:"Rochester",stage:"Target",notes:"Growing health tech"},
+{company:"Black Button Distilling",vertical:"Manufacturing",tier:1,employees:65,hcm:"Paychex",acv:14000,city:"Rochester",stage:"Target",notes:"Fast-growing brand, scaling workforce"},
+{company:"Park Enterprises",vertical:"Hospitality",tier:2,employees:200,hcm:"Paychex",acv:32000,city:"Rochester",stage:"Target",notes:"Hotel real estate group, multi-entity payroll"},
+{company:"Al Sigl Center",vertical:"Nonprofit",tier:2,employees:180,hcm:"Paychex",acv:28000,city:"Rochester",stage:"Target",notes:"Multi-program nonprofit, ACA complexity"},
+{company:"Churchville-Chili CSD",vertical:"Education",tier:2,employees:240,hcm:"Unknown",acv:30000,city:"Churchville",stage:"Target",notes:"School district, complex union payroll"},
+{company:"Mcquaid Jesuit High School",vertical:"Education",tier:2,employees:160,hcm:"Paychex",acv:26000,city:"Rochester",stage:"Target",notes:"Private school, benefits complexity"},
+{company:"Advantage Federal Credit Union",vertical:"Financial Services",tier:2,employees:120,hcm:"Paychex",acv:22000,city:"Rochester",stage:"Target",notes:"Credit union, compliance-heavy"},
+{company:"Foodlink Inc",vertical:"Nonprofit",tier:2,employees:130,hcm:"Paychex",acv:23000,city:"Rochester",stage:"Target",notes:"Large nonprofit, grant-funded payroll"},
+{company:"Landmark Electric Inc",vertical:"Construction",tier:2,employees:130,hcm:"Paychex",acv:23000,city:"Rochester",stage:"Target",notes:"Electrical contractor, certified payroll"},
+{company:"Ontario Specialty Contractors",vertical:"Construction",tier:2,employees:140,hcm:"Paychex",acv:24000,city:"Rochester",stage:"Target",notes:"Specialty contractor, union payroll"},
+{company:"LVD North America",vertical:"Manufacturing",tier:2,employees:130,hcm:"Unknown",acv:23000,city:"Rochester",stage:"Target",notes:"Machinery mfg, multi-state"},
+{company:"Motivair Corporation",vertical:"Manufacturing",tier:2,employees:120,hcm:"Unknown",acv:22000,city:"Rochester",stage:"Target",notes:"Cooling systems mfg"},
+{company:"GrandeVille Senior Living",vertical:"Senior Living",tier:2,employees:150,hcm:"Paychex",acv:25000,city:"Rochester",stage:"Target",notes:"Large diverse workforce"},
+{company:"Gavia Life Care",vertical:"Senior Living",tier:2,employees:130,hcm:"Paychex",acv:23000,city:"Rochester",stage:"Target",notes:"Senior care, TotalSource play"},
+{company:"Innovative Solutions",vertical:"Technology",tier:2,employees:130,hcm:"Paychex",acv:23000,city:"Rochester",stage:"Target",notes:"IT services"},
+{company:"Wilmac Technologies",vertical:"Technology",tier:2,employees:110,hcm:"Paychex",acv:21000,city:"Rochester",stage:"Target",notes:"Technology company"},
+{company:"Torrey Farms Inc",vertical:"Manufacturing",tier:2,employees:130,hcm:"Unknown",acv:23000,city:"Elba",stage:"Target",notes:"Large farm, seasonal complexity"},
+{company:"Suburban Disposal Corp",vertical:"Distribution",tier:2,employees:130,hcm:"Paychex",acv:23000,city:"Rochester",stage:"Target",notes:"Waste services, driver payroll"},
+{company:"Rochester Hearing and Speech Center",vertical:"Healthcare",tier:2,employees:100,hcm:"Paychex",acv:20000,city:"Rochester",stage:"Target",notes:"Therapy services, mixed workforce"},
+{company:"University Medical Imaging PC",vertical:"Healthcare",tier:2,employees:100,hcm:"Paychex",acv:20000,city:"Rochester",stage:"Target",notes:"Medical imaging, multi-site"},
+{company:"The Surgery Center",vertical:"Healthcare",tier:2,employees:110,hcm:"Paychex",acv:21000,city:"Rochester",stage:"Target",notes:"ASC, credentialing complexity"},
+{company:"Mental Health Association of Rochester",vertical:"Healthcare",tier:2,employees:110,hcm:"Paychex",acv:21000,city:"Rochester",stage:"Target",notes:"Behavioral health"},
+{company:"Delphi Rise",vertical:"Nonprofit",tier:2,employees:110,hcm:"Paychex",acv:21000,city:"Rochester",stage:"Target",notes:"Disability services"},
+{company:"United Way of Greater Rochester",vertical:"Nonprofit",tier:2,employees:90,hcm:"Unknown",acv:18000,city:"Rochester",stage:"Target",notes:"Recognized brand"},
+{company:"Genesee Global Group Inc",vertical:"Manufacturing",tier:2,employees:140,hcm:"Paychex",acv:24000,city:"Rochester",stage:"Target",notes:"Industrial group"},
+{company:"Truform Manufacturing Corp",vertical:"Manufacturing",tier:2,employees:100,hcm:"Paychex",acv:20000,city:"Rochester",stage:"Target",notes:"Manufacturing"},
+{company:"Empire Precision Plastics",vertical:"Manufacturing",tier:2,employees:120,hcm:"Paychex",acv:22000,city:"Rochester",stage:"Target",notes:"Plastics manufacturer"},
+{company:"Gates Chili Central School District",vertical:"Education",tier:2,employees:220,hcm:"Unknown",acv:28000,city:"Gates",stage:"Target",notes:"School district"},
+{company:"Bishop Kearney High School",vertical:"Education",tier:2,employees:120,hcm:"Paychex",acv:22000,city:"Rochester",stage:"Target",notes:"Catholic school"},
+{company:"WXXI Public Broadcasting",vertical:"Other",tier:2,employees:130,hcm:"Unknown",acv:23000,city:"Rochester",stage:"Target",notes:"Broadcasting, mixed workforce"},
+{company:"George Eastman House",vertical:"Nonprofit",tier:2,employees:100,hcm:"Unknown",acv:20000,city:"Rochester",stage:"Target",notes:"Cultural institution"},
+{company:"Rohrbach Brewing Company",vertical:"Hospitality",tier:2,employees:75,hcm:"Paychex",acv:16000,city:"Rochester",stage:"Target",notes:"Craft brewery, tip payroll"},
+{company:"Hazlitt 1852 Vineyards",vertical:"Winery/Bev",tier:2,employees:70,hcm:"Paychex",acv:15000,city:"Hector",stage:"Target",notes:"Finger Lakes winery, seasonal"},
+{company:"Highland Contractors",vertical:"Construction",tier:2,employees:110,hcm:"Paychex",acv:21000,city:"Rochester",stage:"Target",notes:"Contractor, multi-trade payroll"},
+{company:"Keeler Construction Co",vertical:"Construction",tier:2,employees:120,hcm:"Paychex",acv:22000,city:"Rochester",stage:"Target",notes:"GC, prevailing wage"},
+{company:"Abbott's Frozen Custard",vertical:"Hospitality",tier:3,employees:40,hcm:"Paychex",acv:9000,city:"Rochester",stage:"Target",notes:"Franchise, seasonal"},
+{company:"Abrasive-Tool Corp",vertical:"Manufacturing",tier:3,employees:45,hcm:"Paychex",acv:10000,city:"Rochester",stage:"Target",notes:""},
+{company:"Apollo Optical Systems",vertical:"Manufacturing",tier:3,employees:48,hcm:"Paychex",acv:10000,city:"Rochester",stage:"Target",notes:""},
+{company:"Brook-Lea Country Club",vertical:"Hospitality",tier:3,employees:60,hcm:"Unknown",acv:13000,city:"Rochester",stage:"Target",notes:"Country club"},
+{company:"Dental Associates Rochester",vertical:"Healthcare",tier:3,employees:55,hcm:"Paychex",acv:12000,city:"Rochester",stage:"Target",notes:"Dental practice"},
+{company:"Document Security Systems",vertical:"Technology",tier:3,employees:120,hcm:"Unknown",acv:22000,city:"Rochester",stage:"Target",notes:"Authentication tech"},
+{company:"Flower City Tissue Mills",vertical:"Manufacturing",tier:3,employees:55,hcm:"Paychex",acv:12000,city:"Rochester",stage:"Target",notes:""},
+{company:"Ford Gum Inc",vertical:"Manufacturing",tier:3,employees:60,hcm:"Unknown",acv:13000,city:"Akron",stage:"Target",notes:""},
+{company:"Genesee Valley Club",vertical:"Hospitality",tier:3,employees:55,hcm:"Unknown",acv:12000,city:"Rochester",stage:"Target",notes:""},
+{company:"Ideal Nissan",vertical:"Auto Dealership",tier:3,employees:65,hcm:"Paychex",acv:14000,city:"Rochester",stage:"Target",notes:"Smaller dealer"},
+{company:"Leroy Plastics Inc",vertical:"Manufacturing",tier:3,employees:45,hcm:"Paychex",acv:10000,city:"LeRoy",stage:"Target",notes:""},
+{company:"Marina Dodge Marina Mitsubishi",vertical:"Auto Dealership",tier:3,employees:70,hcm:"Paychex",acv:14000,city:"Rochester",stage:"Target",notes:"Mid-size dealer"},
+{company:"Orleans Ford",vertical:"Auto Dealership",tier:3,employees:50,hcm:"Paychex",acv:11000,city:"Albion",stage:"Target",notes:""},
+{company:"Our Lady of Mercy High School",vertical:"Education",tier:3,employees:90,hcm:"Unknown",acv:18000,city:"Rochester",stage:"Target",notes:""},
+{company:"Pfisterer North America",vertical:"Manufacturing",tier:3,employees:60,hcm:"Unknown",acv:13000,city:"Rochester",stage:"Target",notes:""},
+{company:"PW Minor LLC",vertical:"Manufacturing",tier:3,employees:60,hcm:"Unknown",acv:13000,city:"Batavia",stage:"Target",notes:"Footwear mfg"},
+{company:"Ridgemont Country Club",vertical:"Hospitality",tier:3,employees:55,hcm:"Unknown",acv:12000,city:"Rochester",stage:"Target",notes:""},
+{company:"Rochester Childfirst Network",vertical:"Nonprofit",tier:3,employees:60,hcm:"Unknown",acv:13000,city:"Rochester",stage:"Target",notes:""},
+{company:"Schlegel Electronic Materials",vertical:"Manufacturing",tier:3,employees:60,hcm:"Paychex",acv:13000,city:"Rochester",stage:"Target",notes:""},
+{company:"The Duke Co",vertical:"Construction",tier:3,employees:55,hcm:"Paychex",acv:12000,city:"Rochester",stage:"Target",notes:""},
+{company:"The Legal Aid Society of Rochester",vertical:"Nonprofit",tier:3,employees:80,hcm:"Unknown",acv:16000,city:"Rochester",stage:"Target",notes:""},
+{company:"Turner Bellows Inc",vertical:"Manufacturing",tier:3,employees:35,hcm:"Paychex",acv:8000,city:"Rochester",stage:"Target",notes:""},
+{company:"United Precious Metal Refining",vertical:"Manufacturing",tier:3,employees:45,hcm:"Unknown",acv:10000,city:"Rochester",stage:"Target",notes:""},
+{company:"WHEC TV",vertical:"Other",tier:3,employees:80,hcm:"Unknown",acv:16000,city:"Rochester",stage:"Target",notes:"TV station"},
+{company:"Whole Latte Love",vertical:"Other",tier:3,employees:35,hcm:"Unknown",acv:8000,city:"Rochester",stage:"Target",notes:"E-commerce"},
+{company:"Women Gynecology and Childbirth Associates",vertical:"Healthcare",tier:3,employees:50,hcm:"Paychex",acv:11000,city:"Rochester",stage:"Target",notes:""},
+{company:"Sessler Environmental Services",vertical:"Other",tier:3,employees:120,hcm:"Unknown",acv:22000,city:"Rochester",stage:"Target",notes:"Environmental contractor"},
+{company:"The Villages of Orleans",vertical:"Senior Living",tier:3,employees:90,hcm:"Unknown",acv:18000,city:"Albion",stage:"Target",notes:""},
+{company:"Medical Motor Service",vertical:"Distribution",tier:3,employees:55,hcm:"Unknown",acv:12000,city:"Rochester",stage:"Target",notes:""},
+{company:"Thermory USA",vertical:"Manufacturing",tier:3,employees:45,hcm:"Unknown",acv:10000,city:"Rochester",stage:"Target",notes:""}
+];
+</script>
+
+<script>
+// ─── DASHBOARD ───────────────────────────────────────────
+function rDash(){
+  var won=accts.filter(function(a){return a.stage==='Closed Won';});
+  var logos=won.length;
+  var rev=won.reduce(function(s,a){return s+(Number(a.acv)||0);},0);
+  var pipe=accts.filter(function(a){return a.stage!=='Closed Won'&&a.stage!=='Closed Lost';}).reduce(function(s,a){return s+(Number(a.acv)||0);},0);
+  var mtgs=acts.filter(function(a){return a.type==='meeting'||a.type==='demo';}).length;
+  var calls=acts.filter(function(a){return a.type==='call';}).length;
+  var emails=acts.filter(function(a){return a.type==='email';}).length;
+  var drops=acts.filter(function(a){return a.type==='drop';}).length;
+  var stales=accts.filter(isStale);
+  var t1=accts.filter(function(a){return a.tier===1&&a.stage==='Target';}).slice(0,5);
+  var recActs=acts.slice().sort(function(a,b){return b.ts-a.ts;}).slice(0,5);
+  var wk=604800000;
+  var now=Date.now();
+  var wkVals=[];
+  for(var i=7;i>=0;i--){wkVals.push(acts.filter(function(a){return a.ts>=now-(i+1)*wk&&a.ts<now-i*wk;}).length);}
+  var lp=Math.min((logos/6)*100,100);
+  var rp=Math.min((rev/150000)*100,100);
+  var bySt=STAGES.map(function(s){return {s:s,n:accts.filter(function(a){return a.stage===s;}).length,v:accts.filter(function(a){return a.stage===s;}).reduce(function(x,a){return x+(Number(a.acv)||0);},0)};}).filter(function(x){return x.n>0;});
+  var maxN=Math.max.apply(null,bySt.map(function(x){return x.n;}))||1;
+
+  var html='<div class="ph"><span class="pt">Command Center</span><button class="btn bg" style="font-size:11px;padding:6px 10px" onclick="showSettings()">Settings</button></div>';
+  html+='<div class="hero"><div style="font-size:9px;font-weight:700;color:#334155;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">FY Quota Tracker &nbsp;·&nbsp; 6 Logos &nbsp;·&nbsp; $150K ARR</div>';
+  html+='<div style="display:flex;gap:14px;align-items:center">';
+  html+=donut(lp,'#2563eb','Logos',60);
+  html+=donut(rp,'#10b981','Revenue',60);
+  html+='<div style="flex:1"><div style="display:flex;justify-content:space-between;margin-bottom:8px">';
+  html+='<div><div style="font-size:9px;color:#475569">Logos</div><div style="font-size:20px;font-weight:800;color:#2563eb">'+logos+'<span style="font-size:12px;color:#334155"> / 6</span></div></div>';
+  html+='<div><div style="font-size:9px;color:#475569">Closed</div><div style="font-size:20px;font-weight:800;color:#10b981">'+fk(rev)+'</div></div>';
+  html+='<div><div style="font-size:9px;color:#475569">Pipeline</div><div style="font-size:20px;font-weight:800;color:#f59e0b">'+fk(pipe)+'</div></div>';
+  html+='</div><div class="barw" style="height:8px"><div class="barf" style="width:'+rp+'%;background:linear-gradient(90deg,#2563eb,#10b981)"></div></div>';
+  html+='<div style="display:flex;justify-content:space-between;font-size:9px;color:#1a2744;margin-top:3px"><span>$0</span><span>$75K</span><span>$150K</span></div></div></div></div>';
+
+  html+='<div class="kpis">';
+  var kdata=[['Meetings',mtgs,'#a855f7'],['Calls',calls,'#10b981'],['Emails',emails,'#2563eb'],['Drops',drops,'#f97316'],['Stale',stales.length,stales.length>0?'#ef4444':'#334155'],['Accts',accts.length,'#64748b']];
+  kdata.forEach(function(k){html+='<div class="kpi"><div class="kv" style="color:'+k[2]+'">'+k[1]+'</div><div class="kl">'+k[0]+'</div></div>';});
+  html+='</div>';
+
+  html+='<div class="card"><div class="sl">Pipeline by Stage</div>';
+  bySt.forEach(function(x){
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">';
+    html+='<span style="font-size:9px;color:#475569;width:80px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+x.s+'</span>';
+    html+=mbar(x.n,maxN,SC[x.s]||'#334155');
+    html+='<span style="font-size:9px;color:#475569;width:14px;text-align:right">'+x.n+'</span>';
+    if(x.v>0)html+='<span style="font-size:9px;color:#10b981;width:38px;text-align:right">'+fk(x.v)+'</span>';
+    html+='</div>';
+  });
+  html+='</div>';
+
+  html+='<div class="card"><div class="sl">Activity Trend (8 Weeks)</div>';
+  html+=spark(wkVals,'#2563eb',Math.min(document.body.clientWidth-56,380),40);
+  html+='<div style="display:flex;justify-content:space-between;font-size:9px;color:#1a2744;margin-top:3px"><span>8wks ago</span><span>Now</span></div></div>';
+
+  html+='<div class="card"><div class="sl">Next Best Outreach - Tier 1</div>';
+  if(!t1.length)html+='<p style="font-size:11px;color:#334155">No Tier 1 targets remaining.</p>';
+  t1.forEach(function(a){
+    html+='<div class="qi" onclick="openAcct(\''+a.id+'\')">';
+    html+='<div class="qdot" style="background:#ef4444"></div>';
+    html+='<div style="flex:1"><div style="font-size:13px;font-weight:600;color:#f1f5f9">'+esc(a.company)+'</div><div style="font-size:10px;color:#475569">'+esc(a.vertical)+' &bull; '+esc(a.hcm)+'</div></div>';
+    html+='<div style="text-align:right"><div style="font-size:11px;color:#10b981;font-weight:700">'+fm(a.acv)+'</div><div style="font-size:9px;color:#ef4444;font-weight:700">CALL</div></div></div>';
+  });
+  html+='</div>';
+
+  if(stales.length){
+    html+='<div class="card"><div class="sl">Stale Deals - Action Needed</div>';
+    stales.forEach(function(a){
+      var d=daysSinceAct(a.id);
+      html+='<div class="row" onclick="openAcct(\''+a.id+'\')"><div style="flex:1"><div style="font-size:13px;font-weight:600;color:#f1f5f9">'+esc(a.company)+'</div><div style="font-size:10px;color:#475569">'+a.stage+'</div></div><span style="font-size:11px;color:#ef4444;font-weight:700">'+d+'d stale</span></div>';
+    });
+    html+='</div>';
+  }
+
+  if(recActs.length){
+    html+='<div class="card"><div class="sl">Recent Activity</div>';
+    recActs.forEach(function(a){
+      var ac=getA(a.accountId);
+      html+='<div style="display:flex;gap:8px;margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid #060f1e">';
+      html+='<span style="font-size:15px;flex-shrink:0">'+( AI[a.type]||'📝')+'</span>';
+      html+='<div><div style="font-size:11px;color:#94a3b8;line-height:1.4">'+(ac?esc(ac.company):'Unknown')+' &bull; '+esc(a.text.slice(0,50))+(a.text.length>50?'...':'')+'</div>';
+      html+='<div style="font-size:9px;color:#334155;margin-top:2px">'+a.type.toUpperCase()+' &bull; '+a.date+'</div></div></div>';
+    });
+    html+='</div>';
+  }
+  return html;
+}
+
+// ─── QUEUE ───────────────────────────────────────────────
+function rQueue(){
+  var today=[];
+  var upcoming=[];
+  accts.forEach(function(acct){
+    var cad=getCad(acct.id);
+    if(!cad||!cad.start)return;
+    var dss=Math.floor((Date.now()-cad.start)/86400000);
+    var done=new Set(cad.done||[]);
+    var steps=cad.steps||DEF_CAD;
+    steps.forEach(function(step){
+      var key=step.day+'-'+step.type;
+      if(done.has(key))return;
+      var du=step.day-1-dss;
+      if(du<=0&&du>=-2)today.push({acct:acct,step:step,key:key,overdue:du<0,od:Math.abs(du)});
+      else if(du>0&&du<=3)upcoming.push({acct:acct,step:step,key:key,du:du});
+    });
+  });
+  today.sort(function(a,b){if(a.overdue&&!b.overdue)return -1;if(!a.overdue&&b.overdue)return 1;return a.acct.tier-b.acct.tier;});
+
+  var html='<div class="ph"><span class="pt">Daily Queue</span><button class="btn bp" style="font-size:11px;padding:7px 12px" onclick="showEnroll()">+ Enroll</button></div>';
+  html+='<div style="font-size:11px;color:#475569;margin-bottom:14px">'+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'</div>';
+
+  if(!today.length){
+    html+='<div class="card" style="text-align:center;padding:28px"><div style="font-size:28px;margin-bottom:8px">&#10003;</div><div style="font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:4px">Queue clear!</div><div style="font-size:11px;color:#475569">Enroll accounts in cadences to build your daily list.</div></div>';
+  } else {
+    html+='<div class="sl">Today\'s Actions ('+today.length+')</div>';
+    today.forEach(function(item){
+      html+='<div class="qi">';
+      html+='<div style="font-size:17px">'+( AI[item.step.type]||'📋')+'</div>';
+      html+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#f1f5f9">'+esc(item.acct.company)+'</div>';
+      html+='<div style="font-size:11px;font-weight:600;color:'+(AC[item.step.type]||'#475569')+'">'+esc(item.step.label)+'</div>';
+      html+='<div style="font-size:10px;color:#475569;margin-top:2px">'+esc(item.step.desc.slice(0,60))+'...</div>';
+      if(item.overdue)html+='<div style="font-size:9px;color:#ef4444;font-weight:700;margin-top:2px">'+item.od+'d overdue</div>';
+      html+='</div>';
+      html+='<div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">';
+      html+='<button class="btn bs" style="font-size:11px;padding:5px 9px" onclick="doneStep(\''+item.acct.id+'\',\''+item.key+'\',\''+esc(item.step.label)+'\')">Done</button>';
+      html+='<button class="btn bg" style="font-size:11px;padding:5px 9px" onclick="openAcct(\''+item.acct.id+'\')">View</button>';
+      html+='</div></div>';
+    });
+  }
+
+  if(upcoming.length){
+    html+='<div class="sl" style="margin-top:14px">Coming Up (3 Days)</div>';
+    upcoming.forEach(function(item){
+      html+='<div class="qi" style="opacity:.6"><div style="font-size:17px">'+( AI[item.step.type]||'📋')+'</div><div style="flex:1"><div style="font-size:12px;font-weight:600;color:#94a3b8">'+esc(item.acct.company)+'</div><div style="font-size:10px;color:#475569">'+esc(item.step.label)+'</div></div><span style="font-size:10px;color:#475569">in '+item.du+'d</span></div>';
+    });
+  }
+
+  html+='<div class="sl" style="margin-top:14px">Active Cadences ('+cads.length+')</div>';
+  if(!cads.length)html+='<p style="font-size:11px;color:#334155;padding:4px 0">No accounts enrolled yet.</p>';
+  cads.forEach(function(cad){
+    var a=getA(cad.accountId);if(!a)return;
+    var steps=cad.steps||DEF_CAD;
+    var done=(cad.done||[]).length;
+    var dss=Math.floor((Date.now()-cad.start)/86400000);
+    html+='<div class="row" onclick="openAcct(\''+a.id+'\')">';
+    html+='<div style="flex:1"><div style="font-size:13px;font-weight:600;color:#f1f5f9">'+esc(a.company)+'</div>';
+    html+='<div style="font-size:10px;color:#475569">Day '+(dss+1)+' of 30 &bull; '+done+'/'+steps.length+' steps</div>';
+    html+='<div style="margin-top:5px;display:flex;align-items:center;gap:6px">'+mbar(done,steps.length,'#2563eb')+'</div></div>';
+    html+='<button class="btn bd" style="font-size:11px;padding:5px 9px;flex-shrink:0" onclick="event.stopPropagation();removeCad(\''+a.id+'\')">Remove</button></div>';
+  });
+
+  html+='<div class="sl" style="margin-top:14px">Custom Cadences</div>';
+  html+='<button class="btn bo bw" style="margin-bottom:8px" onclick="showCadBuilder()">+ Build New Cadence</button>';
+  if(!ccads.length)html+='<p style="font-size:11px;color:#334155">No custom cadences yet.</p>';
+  ccads.forEach(function(c){
+    html+='<div class="row"><div style="flex:1"><div style="font-size:13px;font-weight:600;color:#f1f5f9">'+esc(c.name)+'</div><div style="font-size:10px;color:#475569">'+c.steps.length+' steps'+(c.desc?' &bull; '+esc(c.desc):'')+'</div></div>';
+    html+='<button class="btn bd" style="font-size:11px;padding:5px 9px" onclick="event.stopPropagation();delCcad(\''+c.id+'\')">Delete</button></div>';
+  });
+  return html;
+}
+
+function doneStep(aid,key,label){
+  var note=prompt('Note for "'+label+'" (optional):')||label;
+  var cad=getCad(aid);
+  if(!cad){cad={id:uid(),accountId:aid,start:Date.now(),done:[],steps:null};cads.push(cad);}
+  if(!cad.done)cad.done=[];
+  cad.done.push(key);
+  saveCads();
+  acts.push({id:uid(),accountId:aid,type:key.split('-')[1]||'note',text:note,ts:Date.now(),date:new Date().toLocaleDateString(),ck:key});
+  saveActs();
+  render();
+}
+function removeCad(aid){if(!confirm('Remove from cadence?'))return;cads=cads.filter(function(c){return c.accountId!==aid;});saveCads();render();}
+function delCcad(id){if(!confirm('Delete cadence?'))return;ccads=ccads.filter(function(c){return c.id!==id;});saveCcads();render();}
+
+function showEnroll(){
+  var notIn=accts.filter(function(a){return !getCad(a.id)&&a.stage!=='Closed Won'&&a.stage!=='Closed Lost';});
+  var opts='<option value="">Choose account...</option>'+notIn.sort(function(a,b){return a.tier-b.tier||(a.company>b.company?1:-1);}).map(function(a){return '<option value="'+a.id+'">[T'+a.tier+'] '+esc(a.company)+'</option>';}).join('');
+  var cOpts='<option value="default">Standard 30-Day (11 touches)</option>'+ccads.map(function(c){return '<option value="'+c.id+'">'+esc(c.name)+'</option>';}).join('');
+  openM('<div class="mh"><h3>Enroll in Cadence</h3><button class="mc" onclick="closeM()">×</button></div><div class="mb"><div class="fld"><label>Account</label><select class="sel" id="ea">'+opts+'</select></div><div class="fld"><label>Cadence</label><select class="sel" id="ec">'+cOpts+'</select></div><div class="fld"><label>Start Date</label><input class="inp" type="date" id="ed" value="'+new Date().toISOString().split("T")[0]+'"/></div><button class="btn bp bw" onclick="doEnroll()">Start Cadence</button></div>');
+}
+function doEnroll(){
+  var aid=document.getElementById('ea').value;
+  var cid=document.getElementById('ec').value;
+  var ds=document.getElementById('ed').value;
+  if(!aid){alert('Select an account.');return;}
+  var start=ds?new Date(ds).getTime():Date.now();
+  var steps=null;
+  if(cid!=='default'){var cc=ccads.filter(function(c){return c.id===cid;})[0];if(cc)steps=cc.steps;}
+  cads=cads.filter(function(c){return c.accountId!==aid;});
+  cads.push({id:uid(),accountId:aid,start:start,done:[],steps:steps});
+  saveCads();closeM();render();
+}
+
+var cbCount=0;
+function showCadBuilder(){
+  cbCount=1;
+  openM('<div class="mh"><h3>Build Cadence</h3><button class="mc" onclick="closeM()">×</button></div><div class="mb"><div class="fld"><label>Name</label><input class="inp" id="cn" placeholder="e.g. Healthcare 45-Day"/></div><div class="fld"><label>Description</label><input class="inp" id="cd" placeholder="When to use this..."/></div><div id="csteps">'+cbStep(0)+'</div><button class="btn bg bw" style="margin-bottom:10px" onclick="addCbStep()">+ Add Step</button><button class="btn bp bw" onclick="saveCad()">Save Cadence</button></div>');
+}
+function cbStep(i){
+  return '<div class="card" style="margin-bottom:8px" id="cbs'+i+'"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:10px;font-weight:700;color:#475569">STEP '+(i+1)+'</span>'+(i>0?'<button class="btn bd" style="font-size:10px;padding:3px 8px" onclick="rmCbStep('+i+')">Remove</button>':'')+'</div><div class="g2"><div class="fld"><label>Day</label><input class="inp" id="cbd'+i+'" type="number" value="'+(i===0?1:i+1)+'" min="1" max="90"/></div><div class="fld"><label>Type</label><select class="sel" id="cbt'+i+'"><option value="call">Call</option><option value="email">Email</option><option value="drop">Drop</option><option value="linkedin">LinkedIn</option><option value="meeting">Meeting</option></select></div></div><div class="fld"><label>Label</label><input class="inp" id="cbl'+i+'" placeholder="Step name"/></div><div class="fld"><label>Instructions</label><textarea class="tex" id="cbi'+i+'" style="min-height:50px" placeholder="What to do or say..."></textarea></div></div>';
+}
+function addCbStep(){var c=document.getElementById('csteps');var i=c.querySelectorAll('[id^=cbs]').length;c.insertAdjacentHTML('beforeend',cbStep(i));}
+function rmCbStep(i){var el=document.getElementById('cbs'+i);if(el)el.remove();}
+function saveCad(){
+  var name=document.getElementById('cn').value.trim();
+  if(!name){alert('Enter a name.');return;}
+  var desc=document.getElementById('cd').value.trim();
+  var els=document.getElementById('csteps').querySelectorAll('[id^=cbs]');
+  var steps=[];
+  els.forEach(function(el){
+    var i=el.id.replace('cbs','');
+    steps.push({day:parseInt(document.getElementById('cbd'+i).value)||1,type:document.getElementById('cbt'+i).value||'call',label:document.getElementById('cbl'+i).value||'Step',desc:document.getElementById('cbi'+i).value||''});
+  });
+  if(!steps.length){alert('Add at least one step.');return;}
+  ccads.push({id:uid(),name:name,desc:desc,steps:steps,createdAt:Date.now()});
+  saveCcads();closeM();render();
+}
+</script>
+
+<script>
+// ─── ACCOUNTS LIST ───────────────────────────────────────
+function rAccts(){
+  var fil=accts.filter(function(a){
+    var ql=acctQ.toLowerCase();
+    var ms=!ql||a.company.toLowerCase().indexOf(ql)>-1||(a.contacts||[]).some(function(c){return c.name&&c.name.toLowerCase().indexOf(ql)>-1;});
+    var fs=acctFS==='All'||a.stage===acctFS;
+    var ft=acctFT==='All'||a.tier===Number(acctFT);
+    var fh=acctFH==='All'||(acctFH==='Paychex'?(a.hcm||'').toLowerCase().indexOf('paychex')>-1:true);
+    return ms&&fs&&ft&&fh;
+  }).sort(function(a,b){return a.tier-b.tier||(a.company>b.company?1:-1);});
+
+  var html='<div class="ph"><span class="pt">Accounts</span><button class="btn bp" style="font-size:11px;padding:7px 12px" onclick="showAddAcct()">+ Add</button></div>';
+  html+='<div class="sw"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="inp" id="asrch" value="'+esc(acctQ)+'" placeholder="Search..." oninput="acctQ=this.value;render()"/></div>';
+  html+='<div class="prow" style="margin-bottom:10px">';
+  ['All','Target','Prospecting','Connected','Discovery','Demo','Proposal','Negotiation'].forEach(function(s){html+='<button class="pill'+(acctFS===s?' on':'')+'" onclick="acctFS=\''+s+'\';render()">'+s+'</button>';});
+  html+='</div><div class="prow" style="margin-bottom:10px">';
+  [['All','All Tiers'],['1','T1 Hot'],['2','T2 Warm'],['3','T3 Cool']].forEach(function(x){html+='<button class="pill'+(acctFT===x[0]?' on':'')+'" onclick="acctFT=\''+x[0]+'\';render()">'+x[1]+'</button>';});
+  html+='<button class="pill'+(acctFH==='Paychex'?' on':'')+'" onclick="acctFH=acctFH===\'Paychex\'?\'All\':\'Paychex\';render()">Paychex</button></div>';
+  html+='<div style="font-size:10px;color:#334155;margin-bottom:8px">'+fil.length+' accounts</div>';
+  html+='<div class="card" style="padding:0;overflow:hidden">';
+  if(!fil.length)html+='<div style="padding:28px;text-align:center;font-size:12px;color:#334155">No accounts match.</div>';
+  fil.forEach(function(a,i){
+    var stl=isStale(a);
+    var pri=(a.contacts||[]).filter(function(c){return c.isPrimary;})[0]||(a.contacts||[])[0]||{};
+    html+='<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:'+(i<fil.length-1?'1px solid #0a1220':'none')+';cursor:pointer" onclick="openAcct(\''+a.id+'\')">';
+    html+='<div style="width:7px;height:7px;border-radius:50%;background:'+(TC[a.tier]||'#6b7280')+';flex-shrink:0;margin-top:3px"></div>';
+    html+='<div style="flex:1;min-width:0">';
+    html+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:13px;font-weight:600;color:#f1f5f9">'+esc(a.company)+'</span>';
+    if(stl)html+='<span class="badge" style="background:#7f1d1d;color:#fca5a5;font-size:8px">STALE</span>';
+    html+='</div><div style="display:flex;align-items:center;gap:5px;margin-top:3px;flex-wrap:wrap">'+sc(a.stage)+pb(a.hcm)+'</div>';
+    if(pri.name)html+='<div style="font-size:10px;color:#334155;margin-top:2px">'+esc(pri.name)+(pri.title?' &bull; '+esc(pri.title):'')+'</div>';
+    html+='</div>';
+    html+='<div style="text-align:right;flex-shrink:0">';
+    if(a.acv)html+='<div style="font-size:12px;color:#10b981;font-weight:700">'+fm(a.acv)+'</div>';
+    html+='<div style="font-size:10px;color:#475569">'+esc(a.vertical)+'</div></div></div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+// ─── ACCOUNT DETAIL ──────────────────────────────────────
+function rAcct(){
+  var a=curAcct;
+  if(!a)return '<div style="padding:32px;text-align:center;color:#334155">Account not found.</div>';
+  var isP=(a.hcm||'').toLowerCase().indexOf('paychex')>-1;
+  var myActs=getActs(a.id).slice(0,10);
+  var cad=getCad(a.id);
+  var done=new Set(getDoneSt(a.id));
+  var steps=cad&&cad.steps?cad.steps:DEF_CAD;
+  var next=null;
+  steps.forEach(function(s){if(!next&&!done.has(s.day+'-'+s.type))next=s;});
+  var pri=(a.contacts||[]).filter(function(c){return c.isPrimary;})[0]||(a.contacts||[])[0]||{};
+  var stl=isStale(a);
+  var ctitles=(CTITLES[a.vertical]||CTITLES.Default);
+
+  var html='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
+  html+='<button class="btn bg" style="font-size:11px;padding:6px 10px" onclick="nav(\'accts\')">Back</button>';
+  html+='<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:800;color:#f8fafc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(a.company)+'</div>';
+  html+='<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:3px">'+sc(a.stage)+'<span class="badge" style="background:'+(TC[a.tier]||'#6b7280')+'33;color:'+(TC[a.tier]||'#6b7280')+'">T'+a.tier+'</span>';
+  if(isP)html+='<span class="badge" style="background:#78350f;color:#fde68a">PAYCHEX</span>';
+  if(stl)html+='<span class="badge" style="background:#7f1d1d;color:#fca5a5">STALE</span>';
+  html+='</div></div><button class="btn bg" style="font-size:11px;padding:6px 10px" onclick="showEditAcct(\''+a.id+'\')">Edit</button></div>';
+
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:10px">';
+  html+='<div class="kpi"><div class="kv" style="color:#10b981;font-size:16px">'+(a.acv?fm(a.acv):'TBD')+'</div><div class="kl">ACV</div></div>';
+  html+='<div class="kpi"><div class="kv" style="font-size:16px">'+(a.employees||'?')+'</div><div class="kl">Emp</div></div>';
+  html+='<div class="kpi"><div class="kv" style="color:#f59e0b;font-size:16px">'+myActs.length+'</div><div class="kl">Activities</div></div></div>';
+
+  html+='<div class="prow" style="margin-bottom:12px">';
+  ['overview','cadence','contacts','activity','scripts'].forEach(function(t){html+='<button class="pill'+(acctTab===t?' on':'')+'" onclick="acctTab=\''+t+'\';render()">'+t.charAt(0).toUpperCase()+t.slice(1)+'</button>';});
+  html+='</div>';
+
+  if(acctTab==='overview'){
+    html+='<div class="card"><div class="sl">Account Intel</div>';
+    [['HCM',a.hcm||'Unknown',isP?'#fde68a':'#f1f5f9'],['City',(a.city||'Rochester')+', NY','#f1f5f9'],['Vertical',a.vertical,'#f1f5f9']].forEach(function(r){
+      html+='<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px"><span style="color:#475569">'+r[0]+'</span><span style="color:'+r[2]+';font-weight:600">'+esc(r[1])+'</span></div>';
+    });
+    if(a.products&&a.products.length)html+='<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">'+a.products.map(function(p){return '<span class="tag">'+esc(p)+'</span>';}).join('')+'</div>';
+    if(a.notes)html+='<div style="margin-top:10px;padding:10px;background:#0a1220;border-radius:7px;font-size:11px;color:#94a3b8;line-height:1.65">'+esc(a.notes)+'</div>';
+    if(a.winReason)html+='<div style="margin-top:6px;padding:7px;background:#14532d22;border-radius:6px;font-size:10px;color:#86efac">Won: '+esc(a.winReason)+'</div>';
+    if(a.lossReason)html+='<div style="margin-top:6px;padding:7px;background:#7f1d1d22;border-radius:6px;font-size:10px;color:#fca5a5">Lost: '+esc(a.lossReason)+'</div>';
+    html+='</div>';
+    html+='<div class="card"><div class="sl">Primary Contact</div>';
+    if(pri.name){
+      html+='<div style="font-size:15px;font-weight:700;color:#f1f5f9;margin-bottom:2px">'+esc(pri.name)+'</div>';
+      html+='<div style="font-size:11px;color:#475569;margin-bottom:10px">'+esc(pri.title||'')+'</div>';
+      if(pri.email)html+='<a href="mailto:'+esc(pri.email)+'" style="display:flex;align-items:center;gap:7px;color:#2563eb;font-size:12px;text-decoration:none;margin-bottom:6px">📧 '+esc(pri.email)+'</a>';
+      if(pri.phone)html+='<a href="tel:'+esc(pri.phone)+'" style="display:flex;align-items:center;gap:7px;color:#2563eb;font-size:12px;text-decoration:none;margin-bottom:6px">📞 '+esc(pri.phone)+'</a>';
+      if(pri.linkedin)html+='<a href="'+esc(pri.linkedin)+'" target="_blank" style="display:flex;align-items:center;gap:7px;color:#a855f7;font-size:12px;text-decoration:none">💼 LinkedIn</a>';
+    } else {html+='<p style="font-size:11px;color:#334155">No contact added yet.</p>';}
+    html+='</div>';
+    html+='<div style="display:flex;gap:8px">';
+    html+='<button class="btn bp" style="flex:1" onclick="showLogAct(\''+a.id+'\')">+ Log Activity</button>';
+    if(!cad)html+='<button class="btn bo" style="flex:1" onclick="quickEnroll(\''+a.id+'\')">Start Cadence</button>';
+    else html+='<button class="btn bg" style="flex:1" onclick="acctTab=\'cadence\';render()">View Cadence</button>';
+    html+='</div>';
+  }
+
+  if(acctTab==='cadence'){
+    if(!cad){
+      html+='<div class="card" style="text-align:center;padding:24px"><div style="font-size:24px;margin-bottom:8px">🚀</div><div style="font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:8px">Not enrolled in a cadence</div><button class="btn bp" onclick="quickEnroll(\''+a.id+'\')">Start Standard 30-Day</button></div>';
+    } else {
+      if(next){
+        html+='<div class="cnext"><div style="font-size:9px;font-weight:700;color:#60a5fa;margin-bottom:4px">NEXT ACTION - DAY '+next.day+'</div>';
+        html+='<div style="font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:4px">'+(AI[next.type]||'')+' '+esc(next.label)+'</div>';
+        html+='<div style="font-size:11px;color:#64748b;line-height:1.5;margin-bottom:10px">'+esc(next.desc)+'</div>';
+        html+='<button class="btn bs" style="font-size:12px;padding:7px 14px" onclick="doneStep(\''+a.id+'\',\''+next.day+'-'+next.type+'\',\''+esc(next.label)+'\')">Mark Complete</button></div>';
+      } else {html+='<div style="font-size:12px;color:#10b981;font-weight:700;padding:12px 0">All cadence steps complete!</div>';}
+      html+='<div style="display:flex;flex-direction:column;gap:4px">';
+      steps.forEach(function(step,i){
+        var key=step.day+'-'+step.type;
+        var dn=done.has(key);
+        var cur=next&&next.day===step.day&&next.type===step.type;
+        html+='<div class="step-row" style="display:flex;gap:10px;align-items:flex-start;margin-bottom:4px">';
+        html+='<div><div class="sdot'+(dn?' done':cur?' cur':'')+'">'+(dn?'&#10003;':step.day)+'</div>'+(i<steps.length-1?'<div class="sline"></div>':'')+'</div>';
+        html+='<div style="flex:1;padding-top:5px;opacity:'+(dn?0.4:1)+'">';
+        html+='<div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;font-weight:700;color:'+(cur?'#f1f5f9':'#64748b')+'">'+(AI[step.type]||'')+' '+esc(step.label)+'</span>';
+        html+='<span style="font-size:9px;background:'+(AC[step.type]||'#334155')+'22;color:'+(AC[step.type]||'#475569')+';padding:1px 6px;border-radius:10px;font-weight:700;text-transform:uppercase">'+step.type+'</span></div>';
+        if(cur&&!dn)html+='<div style="font-size:10px;color:#475569;margin-top:2px;line-height:1.4">'+esc(step.desc)+'</div>';
+        html+='</div></div>';
+      });
+      html+='</div>';
+    }
+  }
+
+  if(acctTab==='contacts'){
+    html+='<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="sl" style="margin:0">Contacts</div><button class="btn bo" style="font-size:11px;padding:5px 10px" onclick="showAddContact(\''+a.id+'\')">+ Add</button></div>';
+    var hasC=(a.contacts||[]).filter(function(c){return c.name;});
+    if(!hasC.length)html+='<p style="font-size:11px;color:#334155">No contacts yet.</p>';
+    hasC.forEach(function(c){
+      html+='<div style="padding:10px;background:#0a1220;border-radius:8px;margin-bottom:8px">';
+      html+='<div style="font-size:13px;font-weight:700;color:#f1f5f9">'+esc(c.name)+(c.isPrimary?' <span style="font-size:9px;color:#475569">(Primary)</span>':'')+'</div>';
+      html+='<div style="font-size:11px;color:#475569;margin-bottom:7px">'+esc(c.title||'')+'</div>';
+      if(c.email)html+='<a href="mailto:'+esc(c.email)+'" style="display:block;font-size:11px;color:#2563eb;text-decoration:none;margin-bottom:3px">📧 '+esc(c.email)+'</a>';
+      if(c.phone)html+='<a href="tel:'+esc(c.phone)+'" style="display:block;font-size:11px;color:#2563eb;text-decoration:none;margin-bottom:3px">📞 '+esc(c.phone)+'</a>';
+      if(c.linkedin)html+='<a href="'+esc(c.linkedin)+'" target="_blank" style="display:block;font-size:11px;color:#a855f7;text-decoration:none">💼 LinkedIn</a>';
+      html+='</div>';
+    });
+    html+='</div>';
+    html+='<div class="card"><div class="sl">Sales Navigator Search Targets</div>';
+    html+='<div style="font-size:11px;color:#475569;margin-bottom:8px">Search these titles at <strong style="color:#93c5fd">'+esc(a.company)+'</strong>:</div>';
+    ctitles.forEach(function(t){html+='<div style="font-size:12px;color:#f1f5f9;padding:6px 0;border-bottom:1px solid #060f1e">💼 '+esc(t)+'</div>';});
+    html+='<div style="margin-top:10px;padding:10px;background:#0a1220;border-radius:7px"><div style="font-size:9px;font-weight:700;color:#475569;margin-bottom:4px">CONNECTION REQUEST TEMPLATE</div>';
+    html+='<div style="font-size:11px;color:#94a3b8;line-height:1.5;font-style:italic">Hi [Name] - I work with '+esc(a.vertical.toLowerCase())+' companies in Rochester on HR and payroll. Would love to connect and share an insight relevant for companies your size.</div></div></div>';
+  }
+
+  if(acctTab==='activity'){
+    html+='<button class="btn bp bw" style="margin-bottom:12px" onclick="showLogAct(\''+a.id+'\')">+ Log Activity</button>';
+    html+='<div class="card"><div class="sl">Activity History</div>';
+    if(!myActs.length)html+='<p style="font-size:11px;color:#334155">No activity yet.</p>';
+    myActs.forEach(function(act){
+      html+='<div style="display:flex;gap:9px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #060f1e">';
+      html+='<span style="font-size:16px;flex-shrink:0">'+(AI[act.type]||'📝')+'</span>';
+      html+='<div><div style="font-size:11px;color:#e2e8f0;line-height:1.5">'+esc(act.text)+'</div><div style="font-size:9px;color:#334155;margin-top:2px">'+act.type.toUpperCase()+' &bull; '+act.date+'</div></div></div>';
+    });
+    html+='</div>';
+  }
+
+  if(acctTab==='scripts'){html+=rScripts(a);}
+  return html;
+}
+
+function rScripts(a){
+  var isP=(a.hcm||'').toLowerCase().indexOf('paychex')>-1;
+  var s1='Hey [Name], this is Anthony with ADP -- did I catch you at a bad time?\n\n'+(isP?'Quick reason I am calling -- I cover mid-size companies in Rochester and I noticed '+a.company+' is on Paychex. 3 out of 4 companies I talk to on Paychex tell me the same two things: service falls off after year one, and they are managing payroll and HR across too many systems.':'Quick reason I am calling -- I work with '+a.vertical.toLowerCase()+' companies in Rochester in the 50 to 200 employee range and specialize in helping them streamline HR and payroll.')+'\n\nI have time Thursday or Friday this week -- which works better?';
+  var s2='Hi [Name], Anthony from ADP, my number is [your number]. I work specifically with '+a.vertical.toLowerCase()+' companies in Rochester in the 50 to 200 employee range.\n\n'+(isP?'I noticed '+a.company+' is on Paychex and wanted to see if a conversation makes sense.':'I have been helping similar companies streamline their payroll and HR setup.')+'\n\nGive me a call back or I will try you again [day]. Thanks [Name].';
+  var s3='1. Quick question about '+a.company+'s HR setup\n2. '+(isP?'Paychex alternative -- worth 20 min?':'ADP -- worth 20 min?')+'\n3. How a similar '+a.vertical+' company cut HR admin by 40%\n4. Stopped by today -- '+a.company+'\n5. Compliance update for '+a.vertical.toLowerCase()+' companies';
+  var s4='1. Walk me through your current payroll process from start to finish.\n2. Who handles HR today -- is that their full-time role?\n3. How many different systems are employees logging into for HR, benefits, and time?\n4. What would you change about your current setup if you could?\n'+(isP?'5. How long have you been with Paychex -- and when does your contract come up?\n6. When you have a payroll issue, who do you call?':'5. How are you handling ACA compliance and year-end reporting?');
+  var s5='We are happy with what we have\n-- Happy is great. My job is not to convince you something is broken. It is to show you what you might be missing. Can I get 20 minutes?\n\nNot the right time\n-- When would be? What would need to change to make it relevant?\n\nJust send me info\n-- I would rather not send a generic brochure. Can I ask two quick questions first?\n\nToo expensive\n-- Compared to what? Most companies find the cost is offset in year one by reduced admin time and lower insurance. Let me show you the math.\n\n'+(isP?'We just renewed with Paychex\n-- Perfect timing. Most contracts have a 30-day window for competitive review. When does yours come up? I will have a comparison ready before then.':'');
+  var s6='Hi [Name] -- I work with '+a.vertical.toLowerCase()+' companies in Rochester on HR and payroll. I have been helping similar orgs your size '+(isP?'move off Paychex':'simplify their setup')+' and thought it worth connecting. No pitch -- just felt it might be relevant.';
+
+  var scripts=[['Cold Call Opener','📞',s1,'s1'],['Voicemail','📱',s2,'s2'],['Email Subject Lines','📧',s3,'s3'],['Discovery Questions','🔍',s4,'s4'],['Objection Handlers','🛡️',s5,'s5'],['LinkedIn DM','💼',s6,'s6']];
+  var html='';
+  scripts.forEach(function(sc2){
+    var key='scr_'+sc2[3];
+    html+='<div class="card" style="margin-bottom:10px">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-size:12px;font-weight:700;color:#f1f5f9">'+sc2[0]+' '+sc2[1]+'</div>';
+    html+='<button id="'+key+'" class="btn bg" style="font-size:11px;padding:5px 10px" onclick="copyTxt('+JSON.stringify(sc2[2])+'\''+key+'\')">Copy</button></div>';
+    html+='<div style="font-size:11px;color:#94a3b8;line-height:1.75;white-space:pre-wrap;background:#0a1220;border-radius:7px;padding:10px">'+esc(sc2[2])+'</div></div>';
+  });
+  return html;
+}
+
+function quickEnroll(aid){
+  cads=cads.filter(function(c){return c.accountId!==aid;});
+  cads.push({id:uid(),accountId:aid,start:Date.now(),done:[],steps:null});
+  saveCads();render();
+}
+</script>
+
+<script>
+// ─── PLAYBOOKS ───────────────────────────────────────────
+var PB={
+  paychex:{title:'Paychex Displacement',color:'#ef4444',secs:[
+    {h:'Why Companies Leave Paychex',b:'1. Poor service after year one -- call center, not a rep\n2. Tax filing errors with slow resolution\n3. No in-house 401k -- they resell third-party retirement plans\n4. Limited integration with modern HRIS and ERP systems\n5. Clunky reporting requiring manual exports\n6. ACA compliance support is reactive not proactive\n7. No true HR advisory layer -- just payroll processing\n8. Price increases at renewal with no added value'},
+    {h:'Discovery Questions',b:'"How long have you been with Paychex?"\n"Who do you call when there is a payroll error?"\n"How many different logins do employees use across HR, benefits, and time?"\n"Walk me through open enrollment for your team."\n"If you could change one thing about your current setup, what would it be?"\n"Are you getting proactive compliance updates?"\n"How are you handling ACA tracking and reporting?"'},
+    {h:'Objection Handlers',b:'"We just re-signed"\nPerfect timing. Most contracts have a 30-day window at renewal for competitive review. When does yours come up?\n\n"Paychex is cheaper"\nCheaper base rate yes. But what is the cost of a tax filing error? Let me show you total cost of ownership.\n\n"Do not want the switch hassle"\nADP implementation handles the entire migration. Most clients live in 60 days, zero payroll disruption.\n\n"Our rep is great"\nWhat happens when they leave? ADP gives you a dedicated team not just one rep.'},
+    {h:'Competitive Landmines',b:'"Does your provider notify you proactively when a new labor law affects your industry?"\n"When was the last time your rep reached out with a recommendation?"\n"Do you have a dedicated implementation person or did you go to a call center after signing?"\n"How does your provider handle multi-state compliance if you hire outside NY?"'},
+  ]},
+  totalsource:{title:'TotalSource (PEO)',color:'#2563eb',secs:[
+    {h:'What Is TotalSource?',b:'ADP TotalSource is a Professional Employer Organization. The employer co-employs their workforce with ADP, gaining Fortune 500-level benefits, workers comp, and HR support at SMB pricing.\n\nBest fit: 50-249 employees. Strongest in manufacturing, healthcare, hospitality, and construction.'},
+    {h:'Value Props',b:'1. Fortune 500 benefits pool -- rates small businesses cannot get alone\n2. Workers Comp Pay-by-Pay -- no large deposits, no audits\n3. Employment Practices Liability protection\n4. Dedicated HR Business Partner on staff\n5. ACA compliance fully managed\n6. Unemployment claims management\n7. Onboarding, offboarding, I-9 compliance handled'},
+    {h:'Ideal Triggers',b:'- Owner or office manager doing HR themselves\n- Company recently had OSHA incident or employment lawsuit\n- High turnover in manufacturing or hospitality\n- Struggling to offer competitive benefits\n- No dedicated HR person on staff\n- Workers comp audit coming up\n- Recent rapid growth (20 or more hires in 12 months)'},
+    {h:'Discovery Questions',b:'"Who handles HR today -- is that their full-time role?"\n"How much did your health insurance rate go up this year?"\n"Have you had any employment-related claims in the last 3 years?"\n"Are you paying workers comp annually or monthly?"\n"When a manager has an HR question, who do they call?"\n"If you could hire an HR director for 1500 a month, would that be valuable?"'},
+    {h:'Objection Handlers',b:'"We do not want to share our employees"\nCo-employment is a legal structure not operational. Your employees stay on your floor. You manage them day-to-day. Only the admin behind the scenes changes.\n\n"We already have benefits"\nWhat is your per-employee cost? Most companies see a 15-20 percent reduction through TotalSource risk pool.\n\n"We are too small"\n50-249 is our sweet spot. Big enough to have real HR risk, not big enough for a full in-house HR team.'},
+  ]},
+  retirement:{title:'Retirement and 401k',color:'#10b981',secs:[
+    {h:'Overview',b:'ADP Retirement Services provides full 401k plan administration: recordkeeping, compliance testing, 5500 filing, participant education, and investment management -- all integrated with payroll. Zero manual data entry.'},
+    {h:'Key Value Props',b:'1. Fully integrated with ADP payroll -- contributions flow automatically\n2. Fiduciary support -- reduces employer liability\n3. Auto-enrollment and auto-escalation features\n4. Roth 401k, Safe Harbor, and SIMPLE IRA options\n5. Employee mobile app for investments\n6. SECURE Act 2.0 fully supported'},
+    {h:'Discovery Questions',b:'"Do you currently offer a 401k?"\n"How does your 401k sync with payroll -- is it manual?"\n"When did you last review your plan for SECURE Act 2.0 compliance?"\n"What is your current employee participation rate?"\n"Have you done a fee benchmarking analysis recently?"'},
+    {h:'Objection Handlers',b:'"We use our bank or local advisor"\nDo your payroll and 401k talk automatically? With ADP contributions post the same day payroll runs. No exports, no reconciliation errors.\n\n"Our plan is fine"\nWhen was the last compliance test? SECURE Act 2.0 added requirements most small plans are not aligned with. I can do a free review.'},
+  ]},
+  insurance:{title:'Insurance and Workers Comp',color:'#a855f7',secs:[
+    {h:'Pay-by-Pay Workers Comp',b:'Instead of a large annual premium upfront, clients pay per payroll based on actual wages.\n\nBenefits:\n- Eliminates large deposits and frees cash flow\n- No year-end audit surprises\n- Premium auto-adjusts to actual payroll\n\nBest fit: manufacturing, construction, hospitality, home services\n\nTrigger question: Do you pay a large lump sum for workers comp each year?'},
+    {h:'Discovery Questions',b:'"Walk me through your workers comp renewal -- annual or monthly?"\n"Have you had any workplace injuries in the last 3 years?"\n"What carrier are you with for health insurance? When did you last go out to bid?"\n"Does your broker do a market analysis at renewal or just renew in place?"\n"Are your benefits, workers comp, and payroll all with different vendors?"'},
+    {h:'Objection Handlers',b:'"We have a broker we have used for years"\nADP can work alongside your broker. But Pay-by-Pay workers comp integrates with payroll in a way a standalone carrier cannot match.\n\n"Our rates are fine"\nWhen did your broker last run a full market comparison? The SMB health insurance market has shifted significantly in the last 18 months.'},
+  ]},
+  scripts:{title:'Cold Call Scripts',color:'#f59e0b',secs:[
+    {h:'Universal Framework',b:'Pattern: Pattern Interrupt, Reason for Call, Permission Question, Value Hook, Meeting Ask\n\nKeep it under 45 seconds. Goal is to get the meeting not explain ADP.'},
+    {h:'Script 1: Paychex Target',b:'"Hey [Name], this is Anthony with ADP -- did I catch you at a bad time?\n\nQuick reason I am calling -- I cover mid-size companies in Rochester and I noticed you are on Paychex. 3 out of 4 companies I talk to on Paychex tell me the same two things: service falls off after year one, and they are managing payroll and HR across too many systems.\n\nIf that resonates at all it is worth a 20-minute conversation. I have time Thursday or Friday -- which works better?"'},
+    {h:'Script 2: HR Pain',b:'"Hi [Name], Anthony from ADP -- quick question before I let you go.\n\nI work with companies in Rochester in the 50 to 200 employee range. The pattern I keep seeing is owners spending 8 to 10 hours a week on payroll, HR issues, and compliance that should be automated. Is that something you are dealing with?\n\nIf it is I would love to show you what a few companies in your vertical have done to cut that in half. Can we grab 20 minutes this week?"'},
+    {h:'Script 3: Drop Follow-Up',b:'"Hi [Name], Anthony from ADP -- I actually stopped by your office yesterday and left something with your receptionist.\n\nI work with companies in Rochester in the 50 to 200 employee range and had a feeling it might be relevant.\n\nDo you have 20 minutes this week just to see if it makes sense?"'},
+    {h:'Voicemail Template',b:'"Hi [Name], this is Anthony from ADP, my number is [number]. I work specifically with companies in Rochester in the 50 to 250 employee range.\n\nMost companies I talk to are managing payroll, HR, and benefits across 3 or 4 different systems and I specialize in showing them how to simplify that and save money.\n\nIf that sounds relevant call me back or I will try you again [day]. Thanks [Name]."'},
+    {h:'Gatekeeper Tactics',b:'Receptionist:\n"Hi, this is Anthony from ADP -- hoping to catch [Name] for just a moment. Is she typically available mornings or afternoons?"\n\nIf asked what it is about:\n"It is regarding their HR and payroll setup -- I work with similar companies in the area."\n\nIf told to email:\n"Absolutely, I will send something. Can you confirm her email? And the best direct number if she wants to follow up?"'},
+  ]},
+};
+
+function rPlays(){
+  var pb=PB[pbKey];
+  var html='<div class="ph"><span class="pt">Playbooks</span></div>';
+  html+='<div class="prow" style="margin-bottom:14px">';
+  Object.keys(PB).forEach(function(k){
+    html+='<button class="pill'+(pbKey===k?' on':'')+'" style="'+(pbKey===k?'border-color:'+PB[k].color+';color:'+PB[k].color:'')+'" onclick="pbKey=\''+k+'\';render()">'+PB[k].title+'</button>';
+  });
+  html+='</div><div class="card"><div style="font-size:15px;font-weight:800;color:'+pb.color+';margin-bottom:14px">'+pb.title+'</div>';
+  pb.secs.forEach(function(sec){
+    html+='<div class="pbs"><h4 style="border-color:'+pb.color+'">'+esc(sec.h)+'</h4><div class="pbb">'+esc(sec.b)+'</div></div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+// ─── REPORT ──────────────────────────────────────────────
+function rReport(){
+  var won=accts.filter(function(a){return a.stage==='Closed Won';});
+  var lost=accts.filter(function(a){return a.stage==='Closed Lost';});
+  var logos=won.length,rev=won.reduce(function(s,a){return s+(Number(a.acv)||0);},0);
+  var active=accts.filter(function(a){return ['Target','Prospecting','Closed Won','Closed Lost'].indexOf(a.stage)===-1;});
+  var pipeVal=active.reduce(function(s,a){return s+(Number(a.acv)||0);},0);
+  var mtgs=acts.filter(function(a){return a.type==='meeting'||a.type==='demo';}).length;
+  var calls=acts.filter(function(a){return a.type==='call';}).length;
+  var emails2=acts.filter(function(a){return a.type==='email';}).length;
+  var drops=acts.filter(function(a){return a.type==='drop';}).length;
+  var wr=won.length+lost.length>0?Math.round((won.length/(won.length+lost.length))*100):0;
+  var avgD=logos>0?Math.round(rev/logos):0;
+  var wk=604800000,now2=Date.now();
+  var wActs=acts.filter(function(a){return a.ts>=now2-wk;});
+  var wCalls=wActs.filter(function(a){return a.type==='call';}).length;
+  var wEmails=wActs.filter(function(a){return a.type==='email';}).length;
+  var wMtgs=wActs.filter(function(a){return a.type==='meeting'||a.type==='demo';}).length;
+  var wDrops=wActs.filter(function(a){return a.type==='drop';}).length;
+  var byStage2=STAGES.map(function(s){return {s:s,n:accts.filter(function(a){return a.stage===s;}).length,v:accts.filter(function(a){return a.stage===s;}).reduce(function(x,a){return x+(Number(a.acv)||0);},0)};}).filter(function(x){return x.n>0;});
+  var mxN=Math.max.apply(null,byStage2.map(function(x){return x.n;}))||1;
+  var topDeals=accts.filter(function(a){return ['Target','Prospecting','Closed Lost'].indexOf(a.stage)===-1;}).sort(function(a,b){return (Number(b.acv)||0)-(Number(a.acv)||0);}).slice(0,5);
+  var byProd=PRODS.map(function(p){return {p:p,n:accts.filter(function(a){return (a.products||[]).indexOf(p)>-1;}).length};}).filter(function(x){return x.n>0;}).sort(function(a,b){return b.n-a.n;});
+  var stales2=accts.filter(isStale);
+  var dateStr=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  var lp=Math.min((logos/6)*100,100);
+  var rp=Math.min((rev/150000)*100,100);
+
+  var wkEmail='Subject: Weekly Sales Update - Rochester Territory - '+dateStr+'\n\nHi [Manager],\n\nHere is my update for the week:\n\nQUOTA PROGRESS\n- Logos Closed: '+logos+' / 6\n- Revenue Closed: '+fm(rev)+' / $150,000\n- Pipeline Value: '+fm(pipeVal)+'\n\nACTIVITY THIS WEEK\n- Calls: '+wCalls+'\n- Emails: '+wEmails+'\n- Drops: '+wDrops+'\n- Meetings and Demos: '+wMtgs+'\n\nDEALS IN PROGRESS ('+active.length+' active)\n'+active.slice(0,5).map(function(a){return '- '+a.company+' | '+a.stage+' | '+fm(a.acv);}).join('\n')+(active.length>5?'\n...and '+(active.length-5)+' more':'')+'\n\n'+(stales2.length?'NEEDS ATTENTION\n'+stales2.map(function(a){return '- '+a.company+' | '+a.stage+' | '+daysSinceAct(a.id)+'d since last activity';}).join('\n')+'\n\n':'')+'FOCUS NEXT WEEK\n- Continue Tier 1 outreach ('+accts.filter(function(a){return a.tier===1&&a.stage==='Target';}).length+' targets remaining)\n- Follow up on active pipeline\n- Complete pending cadence steps\n\nAnthony';
+  window._wkEmail=wkEmail;
+
+  var html='<div class="ph"><span class="pt">Report</span></div>';
+  html+='<div class="hero"><div style="font-size:9px;font-weight:700;color:#334155;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">FY Quota &bull; 6 Logos &bull; $150K ARR</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">';
+  html+='<div style="text-align:center">'+donut(lp,'#2563eb','Logos',68)+'<div style="font-size:20px;font-weight:800;color:#2563eb;margin-top:4px">'+logos+' <span style="font-size:12px;color:#334155">/ 6</span></div></div>';
+  html+='<div style="text-align:center">'+donut(rp,'#10b981','Revenue',68)+'<div style="font-size:20px;font-weight:800;color:#10b981;margin-top:4px">'+fk(rev)+' <span style="font-size:12px;color:#334155">/ $150K</span></div></div>';
+  html+='</div><div class="barw" style="height:8px"><div class="barf" style="width:'+rp+'%;background:linear-gradient(90deg,#2563eb,#10b981)"></div></div>';
+  html+='<div style="display:flex;justify-content:space-between;font-size:9px;color:#1a2744;margin-top:3px"><span>$0</span><span>$75K</span><span>$150K</span></div></div>';
+
+  html+='<div class="card"><div class="sl rs">All-Time Metrics</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+  [['Calls Made',calls,'#10b981'],['Emails Sent',emails2,'#2563eb'],['Drops Made',drops,'#f97316'],['Meetings',mtgs,'#a855f7'],['Win Rate',wr+'%','#10b981'],['Avg Deal',fm(avgD),'#f59e0b']].forEach(function(k){
+    html+='<div style="text-align:center;padding:8px;background:#0a1220;border-radius:8px"><div style="font-size:20px;font-weight:800;color:'+k[2]+'">'+k[1]+'</div><div style="font-size:9px;color:#334155;font-weight:700;margin-top:2px">'+k[0]+'</div></div>';
+  });
+  html+='</div></div>';
+
+  html+='<div class="card"><div class="sl rs" style="border-color:#7c3aed">Pipeline by Stage</div>';
+  byStage2.forEach(function(x){
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><span style="font-size:9px;color:#475569;width:75px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+x.s+'</span>'+mbar(x.n,mxN,SC[x.s]||'#334155')+'<span style="font-size:9px;color:#475569;width:14px;text-align:right">'+x.n+'</span>'+(x.v>0?'<span style="font-size:9px;color:#10b981;width:36px;text-align:right">'+fk(x.v)+'</span>':'')+'</div>';
+  });
+  html+='</div>';
+
+  if(topDeals.length){
+    html+='<div class="card"><div class="sl rs" style="border-color:#ef4444">Top Active Deals</div>';
+    topDeals.forEach(function(a){
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #060f1e" onclick="openAcct(\''+a.id+'\')">';
+      html+='<div><div style="font-size:12px;font-weight:600;color:#f1f5f9">'+esc(a.company)+'</div><div style="font-size:10px;color:#334155">'+a.stage+' &bull; '+esc(a.vertical)+'</div></div>';
+      html+='<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:#10b981">'+fm(a.acv)+'</div><div style="font-size:9px;color:'+(TC[a.tier]||'#6b7280')+'">T'+a.tier+'</div></div></div>';
+    });
+    html+='</div>';
+  }
+
+  if(byProd.length){
+    html+='<div class="card"><div class="sl rs" style="border-color:#06b6d4">Product Mix</div>';
+    byProd.forEach(function(x){
+      html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><span style="font-size:10px;color:#64748b;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(x.p)+'</span>'+mbar(x.n,byProd[0].n,'#06b6d4')+'<span style="font-size:9px;color:#475569;width:14px;text-align:right">'+x.n+'</span></div>';
+    });
+    html+='</div>';
+  }
+
+  html+='<div class="card"><div class="sl rs" style="border-color:#15803d">Win / Loss</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">';
+  html+='<div style="text-align:center;padding:12px;background:#14532d22;border-radius:8px"><div style="font-size:26px;font-weight:800;color:#86efac">'+won.length+'</div><div style="font-size:9px;color:#334155;font-weight:700">WON</div></div>';
+  html+='<div style="text-align:center;padding:12px;background:#7f1d1d22;border-radius:8px"><div style="font-size:26px;font-weight:800;color:#fca5a5">'+lost.length+'</div><div style="font-size:9px;color:#334155;font-weight:700">LOST</div></div></div>';
+  won.filter(function(a){return a.winReason;}).forEach(function(a){html+='<div style="font-size:10px;color:#86efac;margin-bottom:3px">&#10003; '+esc(a.company)+': '+esc(a.winReason)+'</div>';});
+  lost.filter(function(a){return a.lossReason;}).forEach(function(a){html+='<div style="font-size:10px;color:#fca5a5;margin-bottom:3px">&#10007; '+esc(a.company)+': '+esc(a.lossReason)+'</div>';});
+  html+='</div>';
+
+  html+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="sl rs" style="margin:0">Weekly Manager Email</div><button id="cpyBtn" class="btn bp" style="font-size:11px;padding:6px 11px" onclick="copyWkEmail()">Copy Email</button></div>';
+  html+='<div style="font-size:9px;color:#475569;margin-bottom:8px">Week of '+dateStr+'</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px">';
+  [['Calls',wCalls,'#10b981'],['Emails',wEmails,'#2563eb'],['Drops',wDrops,'#f97316'],['Meetings',wMtgs,'#a855f7']].forEach(function(k){
+    html+='<div style="padding:8px;background:#0a1220;border-radius:7px;text-align:center"><div style="font-size:17px;font-weight:800;color:'+k[2]+'">'+k[1]+'</div><div style="font-size:9px;color:#334155;font-weight:700">'+k[0]+' This Week</div></div>';
+  });
+  html+='</div>';
+  html+='<div style="background:#0a1220;border-radius:7px;padding:12px;font-size:11px;color:#94a3b8;line-height:1.7;white-space:pre-wrap;max-height:200px;overflow-y:auto">'+esc(wkEmail)+'</div>';
+  html+='<div id="cpyConfirm" style="display:none;text-align:center;padding:6px;font-size:11px;color:#10b981;font-weight:700;margin-top:6px">Copied to clipboard!</div></div>';
+  return html;
+}
+
+function copyWkEmail(){
+  var txt=window._wkEmail||'';
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){document.getElementById('cpyConfirm').style.display='block';setTimeout(function(){var el=document.getElementById('cpyConfirm');if(el)el.style.display='none';},3000);});}
+  else{var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();document.getElementById('cpyConfirm').style.display='block';setTimeout(function(){var el=document.getElementById('cpyConfirm');if(el)el.style.display='none';},3000);}
+}
+</script>
+
+<script>
+// ─── MODALS: ADD/EDIT ACCOUNT ─────────────────────────────
+function showAddAcct(){
+  afProds=[];
+  var vOpts=VERTS.map(function(v){return '<option>'+v+'</option>';}).join('');
+  var sOpts=STAGES.map(function(s){return '<option>'+s+'</option>';}).join('');
+  var pBtns=PRODS.map(function(p){return '<button type="button" class="pill" onclick="togProd(this,\''+esc(p)+'\')" data-p="'+esc(p)+'">'+esc(p)+'</button>';}).join('');
+  openM('<div class="mh"><h3>Add Account</h3><button class="mc" onclick="closeM()">×</button></div><div class="mb"><div class="fld"><label>Company Name</label><input class="inp" id="af-co" placeholder="Acme Corp"/></div><div class="g2"><div class="fld"><label>Vertical</label><select class="sel" id="af-vt">'+vOpts+'</select></div><div class="fld"><label>Tier</label><select class="sel" id="af-tr"><option value="1">T1 Hot</option><option value="2">T2 Warm</option><option value="3">T3 Cool</option></select></div><div class="fld"><label>Stage</label><select class="sel" id="af-st">'+sOpts+'</select></div><div class="fld"><label>HCM</label><input class="inp" id="af-hcm" value="Paychex"/></div><div class="fld"><label>Employees</label><input class="inp" id="af-emp" type="number" placeholder="100"/></div><div class="fld"><label>ACV ($)</label><input class="inp" id="af-acv" type="number" placeholder="20000"/></div></div><div class="fld"><label>City</label><input class="inp" id="af-ci" value="Rochester"/></div><div class="fld"><label>Notes</label><textarea class="tex" id="af-nt" placeholder="Pain points, decision timeline..."></textarea></div><div style="border-top:1px solid #0a1220;margin:10px 0;padding-top:10px"><div style="font-size:9px;font-weight:700;color:#475569;text-transform:uppercase;margin-bottom:8px">PRIMARY CONTACT</div><div class="g2"><div class="fld"><label>Name</label><input class="inp" id="af-cn" placeholder="Jane Smith"/></div><div class="fld"><label>Title</label><input class="inp" id="af-ct" placeholder="HR Director"/></div><div class="fld"><label>Email</label><input class="inp" id="af-ce" type="email"/></div><div class="fld"><label>Phone</label><input class="inp" id="af-cp"/></div></div><div class="fld"><label>LinkedIn URL</label><input class="inp" id="af-cl" placeholder="https://linkedin.com/in/..."/></div></div><div class="fld"><label>Products in Play</label><div style="display:flex;flex-wrap:wrap;gap:6px">'+pBtns+'</div></div><button class="btn bp bw" onclick="doAddAcct()">Save Account</button></div>');
+}
+
+function togProd(btn,prod){
+  var i=afProds.indexOf(prod);
+  if(i>-1){afProds.splice(i,1);btn.classList.remove('on');}
+  else{afProds.push(prod);btn.classList.add('on');}
+}
+
+function doAddAcct(){
+  var co=document.getElementById('af-co').value.trim();
+  if(!co){alert('Company name required.');return;}
+  var a={
+    id:uid(),company:co,
+    vertical:document.getElementById('af-vt').value,
+    tier:parseInt(document.getElementById('af-tr').value),
+    stage:document.getElementById('af-st').value,
+    hcm:document.getElementById('af-hcm').value||'Unknown',
+    employees:parseInt(document.getElementById('af-emp').value)||0,
+    acv:parseInt(document.getElementById('af-acv').value)||0,
+    city:document.getElementById('af-ci').value||'Rochester',
+    notes:document.getElementById('af-nt').value,
+    products:afProds.slice(),
+    contacts:[{id:uid(),name:document.getElementById('af-cn').value,title:document.getElementById('af-ct').value,email:document.getElementById('af-ce').value,phone:document.getElementById('af-cp').value,linkedin:document.getElementById('af-cl').value,isPrimary:true}],
+    winReason:'',lossReason:'',createdAt:Date.now()
+  };
+  accts.push(a);saveA();afProds=[];closeM();render();
+}
+
+function showEditAcct(id){
+  var a=getA(id);if(!a)return;
+  var pri=(a.contacts||[]).filter(function(c){return c.isPrimary;})[0]||(a.contacts||[])[0]||{};
+  afProds=(a.products||[]).slice();
+  var vOpts=VERTS.map(function(v){return '<option'+(v===a.vertical?' selected':'')+'>'+v+'</option>';}).join('');
+  var sOpts=STAGES.map(function(s){return '<option'+(s===a.stage?' selected':'')+'>'+s+'</option>';}).join('');
+  var pBtns=PRODS.map(function(p){return '<button type="button" class="pill'+(afProds.indexOf(p)>-1?' on':'')+'" onclick="togProd(this,\''+esc(p)+'\')" data-p="'+esc(p)+'">'+esc(p)+'</button>';}).join('');
+  openM('<div class="mh"><h3>Edit Account</h3><button class="mc" onclick="closeM()">×</button></div><div class="mb"><div class="fld"><label>Company</label><input class="inp" id="ef-co" value="'+esc(a.company)+'"/></div><div class="g2"><div class="fld"><label>Vertical</label><select class="sel" id="ef-vt">'+vOpts+'</select></div><div class="fld"><label>Tier</label><select class="sel" id="ef-tr"><option value="1"'+(a.tier===1?' selected':'')+'>T1 Hot</option><option value="2"'+(a.tier===2?' selected':'')+'>T2 Warm</option><option value="3"'+(a.tier===3?' selected':'')+'>T3 Cool</option></select></div><div class="fld"><label>Stage</label><select class="sel" id="ef-st">'+sOpts+'</select></div><div class="fld"><label>HCM</label><input class="inp" id="ef-hcm" value="'+esc(a.hcm||'')+'"/></div><div class="fld"><label>Employees</label><input class="inp" id="ef-emp" type="number" value="'+(a.employees||'')+'"/></div><div class="fld"><label>ACV ($)</label><input class="inp" id="ef-acv" type="number" value="'+(a.acv||'')+'"/></div></div><div class="fld"><label>City</label><input class="inp" id="ef-ci" value="'+esc(a.city||'Rochester')+'"/></div><div class="fld"><label>Notes</label><textarea class="tex" id="ef-nt">'+esc(a.notes||'')+'</textarea></div><div class="fld"><label>Win Reason</label><input class="inp" id="ef-win" value="'+esc(a.winReason||'')+'"/></div><div class="fld"><label>Loss Reason</label><input class="inp" id="ef-loss" value="'+esc(a.lossReason||'')+'"/></div><div class="fld"><label>Products in Play</label><div style="display:flex;flex-wrap:wrap;gap:6px">'+pBtns+'</div></div><div style="border-top:1px solid #0a1220;margin:10px 0;padding-top:10px"><div style="font-size:9px;font-weight:700;color:#475569;text-transform:uppercase;margin-bottom:8px">PRIMARY CONTACT</div><div class="g2"><div class="fld"><label>Name</label><input class="inp" id="ef-cn" value="'+esc(pri.name||'')+'"/></div><div class="fld"><label>Title</label><input class="inp" id="ef-ct" value="'+esc(pri.title||'')+'"/></div><div class="fld"><label>Email</label><input class="inp" id="ef-ce" value="'+esc(pri.email||'')+'"/></div><div class="fld"><label>Phone</label><input class="inp" id="ef-cp" value="'+esc(pri.phone||'')+'"/></div></div><div class="fld"><label>LinkedIn</label><input class="inp" id="ef-cl" value="'+esc(pri.linkedin||'')+'"/></div></div><div style="display:flex;gap:8px"><button class="btn bp" style="flex:1" onclick="doEditAcct(\''+id+'\')">Save Changes</button><button class="btn bd" style="font-size:12px;padding:9px 12px" onclick="doDelAcct(\''+id+'\')">Delete</button></div></div>');
+}
+
+function doEditAcct(id){
+  var idx=accts.findIndex(function(a){return a.id===id;});if(idx<0)return;
+  var a=accts[idx];
+  var pri=(a.contacts||[]).filter(function(c){return c.isPrimary;})[0];
+  if(!pri){pri={id:uid(),isPrimary:true};if(!a.contacts)a.contacts=[];a.contacts.push(pri);}
+  pri.name=document.getElementById('ef-cn').value;
+  pri.title=document.getElementById('ef-ct').value;
+  pri.email=document.getElementById('ef-ce').value;
+  pri.phone=document.getElementById('ef-cp').value;
+  pri.linkedin=document.getElementById('ef-cl').value;
+  accts[idx]=Object.assign({},a,{
+    company:document.getElementById('ef-co').value,
+    vertical:document.getElementById('ef-vt').value,
+    tier:parseInt(document.getElementById('ef-tr').value),
+    stage:document.getElementById('ef-st').value,
+    hcm:document.getElementById('ef-hcm').value,
+    employees:parseInt(document.getElementById('ef-emp').value)||0,
+    acv:parseInt(document.getElementById('ef-acv').value)||0,
+    city:document.getElementById('ef-ci').value,
+    notes:document.getElementById('ef-nt').value,
+    winReason:document.getElementById('ef-win').value,
+    lossReason:document.getElementById('ef-loss').value,
+    products:afProds.slice()
+  });
+  curAcct=accts[idx];saveA();afProds=[];closeM();render();
+}
+
+function doDelAcct(id){
+  if(!confirm('Delete this account? Cannot be undone.'))return;
+  accts=accts.filter(function(a){return a.id!==id;});
+  acts=acts.filter(function(a){return a.accountId!==id;});
+  cads=cads.filter(function(c){return c.accountId!==id;});
+  saveA();saveActs();saveCads();
+  closeAM();nav('accts');
+}
+
+function showAddContact(aid){
+  openM('<div class="mh"><h3>Add Contact</h3><button class="mc" onclick="closeM()">×</button></div><div class="mb"><div class="fld"><label>Name</label><input class="inp" id="nc-n" placeholder="Jane Smith"/></div><div class="fld"><label>Title</label><input class="inp" id="nc-t" placeholder="HR Director"/></div><div class="fld"><label>Email</label><input class="inp" id="nc-e" type="email"/></div><div class="fld"><label>Phone</label><input class="inp" id="nc-p"/></div><div class="fld"><label>LinkedIn URL</label><input class="inp" id="nc-l"/></div><button class="btn bp bw" onclick="doAddContact(\''+aid+'\')">Add Contact</button></div>');
+}
+
+function doAddContact(aid){
+  var idx=accts.findIndex(function(a){return a.id===aid;});if(idx<0)return;
+  if(!accts[idx].contacts)accts[idx].contacts=[];
+  accts[idx].contacts.push({id:uid(),name:document.getElementById('nc-n').value,title:document.getElementById('nc-t').value,email:document.getElementById('nc-e').value,phone:document.getElementById('nc-p').value,linkedin:document.getElementById('nc-l').value,isPrimary:false});
+  curAcct=accts[idx];saveA();closeM();render();
+}
+
+function showLogAct(aid){
+  var types=Object.keys(AI);
+  var btns=types.map(function(t){return '<button type="button" class="pill" id="at-'+t+'" onclick="selActType(\''+t+'\')">'+AI[t]+' '+t+'</button>';}).join('');
+  openM('<div class="mh"><h3>Log Activity</h3><button class="mc" onclick="closeM()">×</button></div><div class="mb"><div class="fld"><label>Type</label><div style="display:flex;flex-wrap:wrap;gap:6px">'+btns+'</div><input type="hidden" id="act-type" value="call"/></div><div class="fld"><label>Notes</label><textarea class="tex" id="act-notes" placeholder="What happened? Key takeaways..." style="min-height:90px"></textarea></div><button class="btn bp bw" onclick="doLogAct(\''+aid+'\')">Log Activity</button></div>');
+  setTimeout(function(){var el=document.getElementById('at-call');if(el)el.classList.add('on');},50);
+}
+
+function selActType(t){
+  document.getElementById('act-type').value=t;
+  document.querySelectorAll('[id^=at-]').forEach(function(b){b.classList.remove('on');});
+  var el=document.getElementById('at-'+t);if(el)el.classList.add('on');
+}
+
+function doLogAct(aid){
+  var type=document.getElementById('act-type').value;
+  var text=document.getElementById('act-notes').value.trim();
+  if(!text){alert('Please add a note.');return;}
+  acts.push({id:uid(),accountId:aid,type:type,text:text,ts:Date.now(),date:new Date().toLocaleDateString()});
+  saveActs();closeM();render();
+}
+
+function showSettings(){
+  openM('<div class="mh"><h3>Settings</h3><button class="mc" onclick="closeM()">×</button></div><div class="mb"><div class="fld"><label>Your Name</label><input class="inp" id="st-n" value="'+esc(ld('crm3_name','Anthony'))+'"/></div><div class="fld"><label>Manager Name</label><input class="inp" id="st-m" value="'+esc(ld('crm3_mgr',''))+'"/></div><div style="border-top:1px solid #0a1220;margin:14px 0;padding-top:14px"><div style="font-size:11px;color:#f59e0b;font-weight:700;margin-bottom:8px">Data Management</div><button class="btn bg bw" style="margin-bottom:8px" onclick="exportData()">Export All Data (JSON)</button><button class="btn bg bw" onclick="importData()">Import Data (JSON)</button></div><button class="btn bp bw" onclick="doSaveSettings()">Save Settings</button></div>');
+}
+function doSaveSettings(){sv('crm3_name',document.getElementById('st-n').value);sv('crm3_mgr',document.getElementById('st-m').value);closeM();}
+
+function exportData(){
+  var d=JSON.stringify({accts:accts,acts:acts,cads:cads,ccads:ccads,at:new Date().toISOString()},null,2);
+  var b=new Blob([d],{type:'application/json'});
+  var u=URL.createObjectURL(b);
+  var a=document.createElement('a');a.href=u;a.download='adp-crm-backup.json';a.click();URL.revokeObjectURL(u);
+}
+function importData(){
+  var inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=function(e){
+    var f=e.target.files[0];if(!f)return;
+    var r=new FileReader();
+    r.onload=function(ev){
+      try{
+        var d=JSON.parse(ev.target.result);
+        if(d.accts){accts=d.accts;saveA();}
+        if(d.acts){acts=d.acts;saveActs();}
+        if(d.cads){cads=d.cads;saveCads();}
+        if(d.ccads){ccads=d.ccads;saveCcads();}
+        closeM();render();alert('Data imported!');
+      }catch(err){alert('Invalid file.');}
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+// ─── MAIN RENDER ─────────────────────────────────────────
+function render(){
+  var el=document.getElementById('view');
+  var html='';
+  try{
+    if(vw==='acct'&&curAcct){html=rAcct();}
+    else if(vw==='dash'){html=rDash();}
+    else if(vw==='queue'){html=rQueue();}
+    else if(vw==='accts'){html=rAccts();}
+    else if(vw==='plays'){html=rPlays();}
+    else if(vw==='report'){html=rReport();}
+  }catch(e){
+    html='<div style="padding:20px;color:#ef4444;font-size:12px"><strong>Error rendering view:</strong><br/>'+e.message+'<br/><br/><button class="btn bp" onclick="vw=\'dash\';render()">Go to Dashboard</button></div>';
+    console.error('Render error:',e);
+  }
+  el.innerHTML='<div class="fade">'+html+'</div>';
+}
+
+// ─── BOOT ────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',function(){
+  initData();
+  render();
+});
+</script>
+</body>
+</html>
